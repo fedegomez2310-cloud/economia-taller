@@ -1,226 +1,949 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-<title>Economía del Taller · Reforma Integral</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<title>Economía del Taller</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px}:root{--accent:#1D9E75;--danger:#E24B4A;--warn:#EF9F27;--info:#378ADD;--bg:#fff;--bg2:#f6f6f4;--border:rgba(0,0,0,.1);--text:#1a1a1a;--muted:#666}@media(prefers-color-scheme:dark){:root{--bg:#1a1a1a;--bg2:#242424;--border:rgba(255,255,255,.12);--text:#f0f0f0;--muted:#999}}button,input,select,textarea{font-family:inherit}.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 14px;border:.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-weight:600;cursor:pointer;min-height:40px}.btn.p{background:var(--accent);border-color:var(--accent);color:#fff}.btn.d{color:var(--danger);border-color:var(--danger)}.btn.sm{font-size:12px;padding:7px 10px;min-height:34px}.btn.full{width:100%}.auth{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}.authbox{width:min(360px,100%);border:.5px solid var(--border);border-radius:18px;padding:28px 22px;text-align:center}.tabs{display:flex;background:var(--bg2);padding:3px;border-radius:8px;margin:18px 0}.tabs button{flex:1;border:0;background:transparent;color:var(--muted);padding:8px;border-radius:6px}.tabs button.active{background:var(--bg);color:var(--text)}.frow{margin-bottom:12px;text-align:left}.frow label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.35px;margin-bottom:4px}.frow input,.frow select,.frow textarea{width:100%;border:.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);padding:11px 12px;font-size:15px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.app{display:none;min-height:100vh;flex-direction:column}.top{position:sticky;top:0;z-index:20;background:var(--bg);display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:.5px solid var(--border)}.nav{position:sticky;top:57px;z-index:19;display:flex;overflow:auto;background:var(--bg);border-bottom:.5px solid var(--border)}.nav::-webkit-scrollbar{display:none}.nav button{flex-shrink:0;border:0;background:transparent;color:var(--muted);padding:10px 11px;font-size:11px;border-bottom:2px solid transparent;display:flex;gap:4px;align-items:center}.nav button.active{color:var(--accent);border-bottom-color:var(--accent)}.page{display:none;padding:16px}.page.active{display:block}.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.head h2{font-size:16px}.card{background:var(--bg);border:.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.metric{background:var(--bg2);border-radius:10px;padding:12px}.metric small{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}.metric strong{font-size:20px}.li{display:flex;gap:10px;align-items:center;border-bottom:.5px solid var(--border);padding:10px 0}.li:last-child{border-bottom:0}.li .info{flex:1;min-width:0}.li .name{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.li .sub{font-size:12px;color:var(--muted);margin-top:2px}.badge{font-size:10px;padding:3px 8px;border-radius:99px;background:var(--bg2);font-weight:700}.b-pendiente{background:#FAEEDA;color:#633806}.b-confirmado,.b-aprobado{background:#EAF3DE;color:#27500A}.b-produccion{background:#DCEBFA;color:#0B416E}.b-finalizado{background:#E1F5EE;color:#085041}.b-cancelado{background:#FCEBEB;color:#791F1F}.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;align-items:flex-end;justify-content:center}.overlay.open{display:flex}.sheet{width:100%;max-width:560px;max-height:92vh;overflow:auto;background:var(--bg);border-radius:20px 20px 0 0;padding:20px 20px 40px}.sheet-title{font-size:17px;font-weight:800;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.slabel{font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin:16px 0 8px}.close{border:0;background:transparent;color:var(--muted);font-size:24px;cursor:pointer}.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}.toast{display:none;position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#111;color:#fff;border-radius:18px;padding:9px 16px;z-index:200;font-size:13px}.thumb{height:125px;border-radius:10px;background:var(--bg2);overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:28px;margin-bottom:10px}.thumb img{width:100%;height:100%;object-fit:cover}.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}.chip{font-size:10px;background:var(--bg2);border-radius:99px;padding:3px 8px;color:var(--muted)}.search{position:relative}.drop{position:absolute;left:0;right:0;top:100%;background:var(--bg);border:.5px solid var(--border);box-shadow:0 8px 24px rgba(0,0,0,.12);border-radius:10px;z-index:101;max-height:240px;overflow:auto;display:none}.drop.open{display:block}.drop .opt{padding:10px;border-bottom:.5px solid var(--border);cursor:pointer}.drop .opt:hover{background:var(--bg2)}.prodline{display:flex;gap:8px;align-items:center;background:var(--bg2);border-radius:10px;padding:10px;margin-bottom:8px}.prodline .info{flex:1}.pdf{display:none;position:fixed;inset:0;background:rgba(0,0,0,.76);z-index:180;align-items:flex-start;justify-content:center;padding:12px;overflow:auto}.pdf.open{display:flex}.pdfbox{background:#fff;color:#111;width:100%;max-width:560px;border-radius:14px;overflow:hidden;margin:auto}.pdfcontent{max-height:64vh;overflow:auto}.PR{font-family:Georgia,serif;padding:28px 24px}.PRhead{display:flex;justify-content:space-between;border-bottom:2px solid #111;padding-bottom:14px;margin-bottom:18px}.PR h1{font-size:19px;letter-spacing:1px;text-transform:uppercase}.PR small{color:#666}.PR table{width:100%;border-collapse:collapse;margin:14px 0}.PR th{font-size:9px;text-transform:uppercase;color:#777;text-align:left;border-bottom:1px solid #ddd;padding-bottom:5px}.PR td{font-size:13px;border-bottom:1px solid #eee;padding:8px 0;vertical-align:top}.PR td:last-child{text-align:right;font-weight:700}.PRtotal{display:flex;justify-content:space-between;align-items:baseline;border-top:2px solid #111;padding-top:14px;margin-top:14px}.PRtotal strong{font-size:28px}.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.day{min-height:66px;background:var(--bg2);border-radius:8px;padding:6px;font-size:11px}.task{margin-top:4px;border-radius:5px;padding:3px 4px;background:#DCEBFA;color:#0B416E;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.hidden{display:none!important}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg2);color:var(--text);font-size:14px}
+:root{--accent:#1D9E75;--danger:#E24B4A;--warn:#EF9F27;--info:#378ADD;--bg:#fff;--bg2:#f6f6f4;--border:rgba(0,0,0,.1);--text:#1a1a1a;--muted:#666}
+@media(prefers-color-scheme:dark){:root{--bg:#1c1c1e;--bg2:#111;--border:rgba(255,255,255,.1);--text:#f0f0f0;--muted:#999}}
+button,input,select,textarea{font-family:inherit}
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:10px 14px;border:.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-weight:600;font-size:13px;cursor:pointer;min-height:38px;transition:opacity .1s}
+.btn:active{opacity:.7}.btn.p{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.d{color:var(--danger);border-color:var(--danger)}.btn.w{color:var(--warn);border-color:var(--warn)}
+.btn.sm{font-size:12px;padding:6px 10px;min-height:30px}.btn.full{width:100%;justify-content:center}
+.btn.xs{font-size:11px;padding:4px 8px;min-height:24px;border-radius:6px}
+/* Auth */
+.auth{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.authbox{width:min(360px,100%);border:.5px solid var(--border);border-radius:18px;padding:28px 22px;text-align:center;background:var(--bg)}
+.tabs{display:flex;background:var(--bg2);padding:3px;border-radius:8px;margin:16px 0}
+.tabs button{flex:1;border:0;background:transparent;color:var(--muted);padding:8px;border-radius:6px;font-weight:500}
+.tabs button.active{background:var(--bg);color:var(--text)}
+/* Layout */
+.app{display:none;min-height:100vh;flex-direction:column}
+.top{position:sticky;top:0;z-index:20;background:var(--bg);display:flex;justify-content:space-between;align-items:center;padding:11px 16px;border-bottom:.5px solid var(--border)}
+.nav{position:sticky;top:53px;z-index:19;display:flex;overflow:auto;background:var(--bg);border-bottom:.5px solid var(--border);scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav button{flex-shrink:0;border:0;background:transparent;color:var(--muted);padding:9px 11px;font-size:11px;font-weight:500;border-bottom:2px solid transparent;display:flex;gap:3px;align-items:center;white-space:nowrap}
+.nav button.active{color:var(--accent);border-bottom-color:var(--accent)}
+.page{display:none;padding:14px;max-width:640px;margin:0 auto;width:100%}.page.active{display:block}
+/* Forms */
+.frow{margin-bottom:11px;text-align:left}
+.frow label{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;font-weight:600}
+.frow input,.frow select,.frow textarea{width:100%;border:.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);padding:10px 12px;font-size:15px;outline:none}
+.frow input:focus,.frow select:focus,.frow textarea:focus{border-color:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+/* Cards */
+.card{background:var(--bg);border:.5px solid var(--border);border-radius:12px;padding:13px;margin-bottom:10px}
+.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.head h2{font-size:16px;font-weight:700}
+/* Metrics */
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.metric{background:var(--bg);border:.5px solid var(--border);border-radius:10px;padding:11px}
+.metric small{display:block;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.metric strong{font-size:17px;font-weight:700}
+.metric .cnt{font-size:11px;color:var(--muted);margin-top:1px}
+/* List */
+.li{display:flex;gap:8px;align-items:flex-start;border-bottom:.5px solid var(--border);padding:10px 0}
+.li:last-child{border-bottom:0}.li .info{flex:1;min-width:0}
+.li .name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li .sub{font-size:11px;color:var(--muted);margin-top:2px}
+/* Badges */
+.badge{font-size:10px;padding:3px 7px;border-radius:99px;font-weight:700;white-space:nowrap}
+.b-pendiente{background:#FAEEDA;color:#633806}.b-confirmado{background:#EAF3DE;color:#27500A}
+.b-produccion{background:#DCEBFA;color:#0B416E}.b-finalizado{background:#E1F5EE;color:#085041}
+.b-entregado{background:#EDE9FE;color:#4C1D95}.b-cancelado{background:#FCEBEB;color:#791F1F}
+.b-stock{background:#EAF3DE;color:#27500A}.b-sinstock{background:#FCEBEB;color:#791F1F}
+.b-fabricar{background:#DCEBFA;color:#0B416E}.b-reservado{background:#FAEEDA;color:#633806}
+.b-vendido{background:#F1EFE8;color:#444}
+/* Overlay / Sheet */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;align-items:flex-end;justify-content:center}
+.overlay.open{display:flex}
+.sheet{width:100%;max-width:580px;max-height:93vh;overflow:auto;background:var(--bg);border-radius:20px 20px 0 0;padding:18px 18px 50px}
+.sheet-title{font-size:16px;font-weight:800;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.slabel{font-size:10px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin:14px 0 7px}
+.close{border:0;background:transparent;color:var(--muted);font-size:24px;cursor:pointer;min-width:40px}
+.sactions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;padding-top:12px;border-top:.5px solid var(--border)}
+/* Toast */
+.toast{display:none;position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#111;color:#fff;border-radius:18px;padding:9px 16px;z-index:300;font-size:13px;pointer-events:none}
+/* Product thumb */
+.thumb{border-radius:10px;background:var(--bg2);overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:28px;cursor:pointer}
+.thumb img{width:100%;height:100%;object-fit:contain;display:block}
+.thumbsm{width:64px;height:64px;flex-shrink:0;border-radius:8px;background:var(--bg2);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:22px}
+.thumbsm img{width:100%;height:100%;object-fit:contain}
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.chip{font-size:10px;background:var(--bg2);border-radius:99px;padding:3px 8px;color:var(--muted)}
+/* Product search drop */
+.search{position:relative}
+.drop{position:absolute;left:0;right:0;top:100%;background:var(--bg);border:.5px solid var(--border);box-shadow:0 8px 24px rgba(0,0,0,.13);border-radius:10px;z-index:150;max-height:220px;overflow:auto;display:none}
+.drop.open{display:block}.drop .opt{padding:10px;border-bottom:.5px solid var(--border);cursor:pointer}
+.drop .opt:hover{background:var(--bg2)}.drop .opt:last-child{border-bottom:0}
+.prodline{display:flex;gap:8px;align-items:center;background:var(--bg2);border-radius:10px;padding:10px;margin-bottom:7px}
+.prodline .info{flex:1;min-width:0}
+/* PDF overlay */
+.pdf{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;align-items:flex-start;justify-content:center;padding:12px;overflow:auto}
+.pdf.open{display:flex}
+.pdfbox{background:#fff;color:#111;width:100%;max-width:580px;border-radius:14px;overflow:hidden;margin:auto}
+.pdfcontent{max-height:66vh;overflow:auto}
+/* PDF interno */
+.PR{font-family:Georgia,serif;padding:26px 22px;background:#fff;color:#111}
+.PRhead{display:flex;justify-content:space-between;border-bottom:2px solid #111;padding-bottom:12px;margin-bottom:16px}
+.PR h1{font-size:18px;letter-spacing:1px;text-transform:uppercase}
+.PR table{width:100%;border-collapse:collapse;margin:12px 0}
+.PR th{font-size:9px;text-transform:uppercase;color:#777;text-align:left;border-bottom:1px solid #ddd;padding-bottom:4px}
+.PR td{font-size:13px;border-bottom:1px solid #eee;padding:7px 0;vertical-align:top}
+.PR td:last-child{text-align:right;font-weight:700}
+.PRtotal{display:flex;justify-content:space-between;align-items:baseline;border-top:2px solid #111;padding-top:12px;margin-top:12px}
+.PRtotal strong{font-size:26px}
+/* Calendar */
+.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.day{min-height:56px;background:var(--bg2);border-radius:7px;padding:5px;font-size:10px}
+.task{margin-top:3px;border-radius:4px;padding:2px 4px;background:#DCEBFA;color:#0B416E;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px}
+/* Lightbox */
+.lbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:400;align-items:center;justify-content:center;cursor:zoom-out}
+.lbox.open{display:flex}.lbox img{max-width:95vw;max-height:95vh;border-radius:8px;object-fit:contain}
+/* Money input */
+.money-wrap{position:relative;display:flex;align-items:center}
+.money-wrap .sign{position:absolute;left:11px;font-size:15px;color:var(--muted);pointer-events:none}
+.money-wrap input{padding-left:24px}
+/* Status row */
+.status-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
 </style>
 </head>
 <body>
 <div class="toast" id="toast"></div>
-<div class="auth" id="auth-screen"><div class="authbox"><div style="font-size:34px">🔧</div><h1 style="font-size:21px">Economía del Taller</h1><p style="color:var(--muted);font-size:13px;margin-top:4px">ERP interno · Un Atelier / Fede Gomez Friera</p><div class="tabs"><button class="active" onclick="setAuthMode('login')">Ingresar</button><button onclick="setAuthMode('register')">Registrarse</button></div><div id="auth-err" style="min-height:18px;color:var(--danger);font-size:12px"></div><div class="frow"><label>Email</label><input id="a-email" type="email" autocomplete="email"></div><div class="frow"><label>Contraseña</label><input id="a-pass" type="password" autocomplete="current-password"></div><button class="btn p full" id="auth-btn" onclick="doAuth()">Ingresar</button></div></div>
-<div class="app" id="app-screen"><div class="top"><div><b>🔧 Economía del Taller</b><div id="user-email" style="font-size:10px;color:var(--muted)"></div></div><button class="btn sm d" onclick="doLogout()"><i class="ti ti-logout"></i></button></div><nav class="nav" id="nav"></nav><main id="pages"></main></div>
-<div class="pdf" id="pdf"><div class="pdfbox"><div style="display:flex;justify-content:space-between;padding:14px;border-bottom:1px solid #eee"><b>Documento</b><button class="close" onclick="closePdf()">×</button></div><div class="pdfcontent" id="pdf-content"></div><div style="display:flex;gap:8px;padding:12px;border-top:1px solid #eee"><button class="btn full" onclick="closePdf()">Cerrar</button><button class="btn p full" onclick="shareDoc()"><i class="ti ti-share"></i>Compartir</button><button class="btn full" onclick="printDoc()"><i class="ti ti-printer"></i>PDF</button></div></div></div>
+<div class="lbox" id="lbox" onclick="$('lbox').classList.remove('open')"><img id="lbox-img" src="" alt="foto"></div>
+
+<!-- AUTH -->
+<div class="auth" id="auth-screen">
+<div class="authbox">
+  <div style="font-size:34px">🔧</div>
+  <h1 style="font-size:20px;margin-top:4px">Economía del Taller</h1>
+  <p style="color:var(--muted);font-size:12px;margin-top:4px">ERP · Un Atelier / Fede Gomez Friera</p>
+  <div class="tabs">
+    <button class="active" onclick="setAuthMode('login')">Ingresar</button>
+    <button onclick="setAuthMode('register')">Registrarse</button>
+  </div>
+  <div id="auth-err" style="min-height:16px;color:var(--danger);font-size:12px;margin-bottom:8px"></div>
+  <div class="frow"><label>Email</label><input id="a-email" type="email" autocomplete="email"></div>
+  <div class="frow"><label>Contraseña</label><input id="a-pass" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doAuth()"></div>
+  <button class="btn p full" id="auth-btn" onclick="doAuth()">Ingresar</button>
+</div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app-screen">
+  <div class="top">
+    <div>
+      <b style="font-size:14px">🔧 Economía del Taller</b>
+      <div id="user-email" style="font-size:10px;color:var(--muted)"></div>
+    </div>
+    <button class="btn sm d" onclick="doLogout()"><i class="ti ti-logout"></i></button>
+  </div>
+  <nav class="nav" id="nav"></nav>
+  <main id="pages"></main>
+</div>
+
+<!-- PDF -->
+<div class="pdf" id="pdf">
+  <div class="pdfbox">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid #eee">
+      <b id="pdf-title">Documento</b>
+      <button class="close" onclick="closePdf()">×</button>
+    </div>
+    <div class="pdfcontent" id="pdf-content"></div>
+    <div style="display:flex;gap:8px;padding:10px 14px;border-top:1px solid #eee">
+      <button class="btn full" onclick="closePdf()">Cerrar</button>
+      <button class="btn p full" onclick="shareDoc()"><i class="ti ti-share"></i>Compartir</button>
+      <button class="btn full" onclick="printDoc()"><i class="ti ti-printer"></i>PDF</button>
+    </div>
+  </div>
+</div>
+
 <div id="overlays"></div>
+
 <script>
 window.addEventListener('load',function(){
-const firebaseConfig={apiKey:'AIzaSyBl-3tb0qqJL7l-1TThOLljRhn9MsoOQQM',authDomain:'economia-del-taller.firebaseapp.com',projectId:'economia-del-taller',storageBucket:'economia-del-taller.firebasestorage.app',messagingSenderId:'999276079590',appId:'1:999276079590:web:515dee9e869a33f5430e27'};
-firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.firestore();
-const $=id=>document.getElementById(id),fmt=n=>'$'+Math.round(Number(n||0)).toLocaleString('es-AR'),today=()=>new Date().toISOString().slice(0,10),uid=()=>auth.currentUser&&auth.currentUser.uid;
-let authMode='login',state={productos:[],clientes:[],presupuestos:[],gastos:[],caja:[],ordenes:[],usuarios:[],inventario:[],historial:[],recibos:[]},unsubs=[],currentRole='admin',currentDocText='',presupItems=[],pagoItems=[],productoFotos=[];
-const COLS=['productos','clientes','presupuestos','gastos','caja','ordenes','usuarios','inventario','historial','recibos'];
-const roles={admin:['dashboard','productos','clientes','presupuestos','produccion','inventario','caja','gastos','usuarios','actividad','config'],produccion:['produccion','inventario','actividad']};
-const pages=[['dashboard','Tablero','ti-layout-dashboard'],['productos','Productos','ti-box'],['clientes','Clientes','ti-users'],['presupuestos','Presupuestos','ti-receipt'],['produccion','Producción','ti-calendar-cog'],['inventario','Inventario','ti-packages'],['caja','Caja','ti-wallet'],['gastos','Gastos','ti-arrow-up-circle'],['usuarios','Usuarios','ti-user-cog'],['actividad','Actividad','ti-history'],['config','Config','ti-settings']];
+// ── Firebase ──────────────────────────────────────────────────────────────
+firebase.initializeApp({apiKey:'AIzaSyBl-3tb0qqJL7l-1TThOLljRhn9MsoOQQM',authDomain:'economia-del-taller.firebaseapp.com',projectId:'economia-del-taller',storageBucket:'economia-del-taller.firebasestorage.app',messagingSenderId:'999276079590',appId:'1:999276079590:web:515dee9e869a33f5430e27'});
+const auth=firebase.auth(),db=firebase.firestore();
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+window.$=id=>document.getElementById(id);
+const fmt=n=>'$ '+Math.round(Number(n||0)).toLocaleString('es-AR');
+const fmtInput=n=>Math.round(Number(n||0)).toLocaleString('es-AR');
+const parseM=s=>parseInt(String(s||'').replace(/\D/g,''))||0;
+const today=()=>new Date().toISOString().slice(0,10);
+const uid=()=>auth.currentUser&&auth.currentUser.uid;
+const addDays=(d,n)=>{let x=new Date(d);x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
+
+// ── State ─────────────────────────────────────────────────────────────────
+let authMode='login';
+let state={productos:[],clientes:[],presupuestos:[],gastos:[],caja:[],ordenes:[],usuarios:[],inventario:[],historial:[],recibos:[]};
+let unsubs=[],currentRole='admin',currentDocText='',presupItems=[];
+
+const CATS=['Mesas','Sillas','Muebles','Aberturas','Postigones','Puertas','Objetos','Iluminación','Herrería','Carpintería','Otros'];
+const ESTADOS_PRE=['pendiente','confirmado','produccion','finalizado','entregado','cancelado'];
+const ESTADOS_PROD=['stock','sinstock','fabricar','reservado','vendido'];
+const MEDIOS=['Pesos efectivo','Dólares','Mercado Pago','Transferencia','Cheque','Otro'];
+const CATS_GASTO=['Materiales','Mano de obra','Herramientas','Transporte','Servicios','Marketing','Impuestos','Alquiler','Otro'];
+
+const roles={
+  admin:['dashboard','stock','productos','clientes','presupuestos','produccion','inventario','caja','gastos','usuarios','actividad','config'],
+  produccion:['produccion','stock','inventario','actividad']
+};
+const PAGES=[
+  ['dashboard','Tablero','ti-layout-dashboard'],
+  ['stock','Stock','ti-packages'],
+  ['productos','Productos','ti-box'],
+  ['clientes','Clientes','ti-users'],
+  ['presupuestos','Presupuestos','ti-receipt'],
+  ['produccion','Producción','ti-calendar-cog'],
+  ['inventario','Inventario','ti-tool'],
+  ['caja','Caja','ti-wallet'],
+  ['gastos','Gastos','ti-arrow-up-circle'],
+  ['usuarios','Usuarios','ti-user-cog'],
+  ['actividad','Actividad','ti-history'],
+  ['config','Config','ti-settings'],
+];
+
+// ── Utilities ─────────────────────────────────────────────────────────────
 function toast(t){$('toast').textContent=t;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2300)}
 function coll(c){return db.collection('users').doc(uid()).collection(c)}
 function log(action,tipo,id){if(!uid())return;coll('historial').add({action,tipo,itemId:id||'',usuario:auth.currentUser.email,fecha:Date.now()}).catch(()=>{})}
-function add(c,d,cb){coll(c).add({...d,createdAt:Date.now(),updatedAt:Date.now()}).then(r=>{log('Creó '+c,c,r.id);toast('Guardado ✓');cb&&cb(r.id)}).catch(e=>toast('Error: '+e.message))}
-function upd(c,id,d,cb){coll(c).doc(id).update({...d,updatedAt:Date.now()}).then(()=>{log('Editó '+c,c,id);toast('Actualizado ✓');cb&&cb()}).catch(e=>toast('Error: '+e.message))}
-function del(c,id){if(!confirm('¿Eliminar?'))return;coll(c).doc(id).delete().then(()=>{log('Eliminó '+c,c,id);toast('Eliminado')})}
+function addDoc2(c,d,cb){coll(c).add({...d,createdAt:Date.now(),updatedAt:Date.now()}).then(r=>{log('Creó '+c,c,r.id);toast('Guardado ✓');cb&&cb(r.id)}).catch(e=>toast('Error: '+e.message))}
+function updDoc(c,id,d,cb){coll(c).doc(id).update({...d,updatedAt:Date.now()}).then(()=>{log('Editó '+c,c,id);toast('Actualizado ✓');cb&&cb()}).catch(e=>toast('Error: '+e.message))}
+function delDoc(c,id,cb){coll(c).doc(id).delete().then(()=>{log('Eliminó '+c,c,id);toast('Eliminado');cb&&cb()}).catch(e=>toast('Error: '+e.message))}
 function nextCode(prefix,arr){let max=0;arr.forEach(x=>{let m=String(x.codigo||x.numero||'').match(/(\d+)/);if(m)max=Math.max(max,parseInt(m[1]))});return prefix+'-'+String(max+1).padStart(4,'0')}
-function can(page){return (roles[currentRole]||roles.admin).includes(page)}
+function can(p){return (roles[currentRole]||roles.admin).includes(p)}
+function sum(a,f){return a.reduce((s,x)=>s+Number(f(x)||0),0)}
+function clienteName(id){return (state.clientes.find(c=>c.id===id)||{}).nombre||'Sin cliente'}
+function presupDesc(id){let p=state.presupuestos.find(x=>x.id===id);return p?(p.numero+' · '+clienteName(p.clienteId)):''}
+function imgOf(p){return (p.fotos&&p.fotos[0])?`<img src="${esc(p.fotos[0])}" loading="lazy">`:'<i class="ti ti-photo"></i>'}
+function esc(s){return String(s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
+function moneyInput(id,val,oninputFn){
+  return `<div class="money-wrap"><span class="sign">$</span><input type="text" inputmode="numeric" id="${id}" value="${fmtInput(val)}" oninput="${oninputFn||''}(this)" onfocus="selAll(this)" onblur="blurMoney(this)"></div>`;
+}
+window.selAll=el=>{setTimeout(()=>el.select(),50)};
+window.blurMoney=el=>{let v=parseM(el.value);el.value=v?fmtInput(v):'';};
+window.fmtMoneyInput=el=>{let v=parseM(el.value);el.value=v?fmtInput(v):'';};
+function getM(id){return parseM($(id)&&$(id).value)}
+
+// ── Auth ──────────────────────────────────────────────────────────────────
 window.setAuthMode=m=>{authMode=m;document.querySelectorAll('.tabs button').forEach((b,i)=>b.classList.toggle('active',['login','register'][i]===m));$('auth-btn').textContent=m==='login'?'Ingresar':'Crear cuenta'};
 window.doAuth=()=>{let e=$('a-email').value.trim(),p=$('a-pass').value;if(!e||!p)return $('auth-err').textContent='Completá email y contraseña';(authMode==='login'?auth.signInWithEmailAndPassword(e,p):auth.createUserWithEmailAndPassword(e,p)).catch(x=>$('auth-err').textContent=x.message)};
 window.doLogout=()=>{unsubs.forEach(u=>u());unsubs=[];auth.signOut()};
-auth.onAuthStateChanged(async u=>{if(!u){$('auth-screen').style.display='flex';$('app-screen').style.display='none';return}$('auth-screen').style.display='none';$('app-screen').style.display='flex';$('user-email').textContent=u.email;await loadRole();initListeners();buildNav();render()});
-async function loadRole(){let qs=await coll('usuarios').where('email','==',auth.currentUser.email).limit(1).get();if(qs.empty){currentRole='admin';await coll('usuarios').add({nombre:'Administrador',email:auth.currentUser.email,rol:'admin',permisos:roles.admin,createdAt:Date.now()})}else currentRole=qs.docs[0].data().rol||'admin'}
-function initListeners(){unsubs.forEach(u=>u());unsubs=[];COLS.forEach(c=>unsubs.push(coll(c).onSnapshot(s=>{state[c]=s.docs.map(d=>({id:d.id,...d.data()}));render()})))}
-function buildNav(){let n=$('nav');n.innerHTML='';pages.filter(p=>can(p[0])).forEach((p,i)=>{let b=document.createElement('button');b.innerHTML=`<i class="ti ${p[2]}"></i>${p[1]}`;b.onclick=()=>showPage(p[0]);if(i===0)b.classList.add('active');n.appendChild(b)});$('pages').innerHTML=pages.filter(p=>can(p[0])).map((p,i)=>`<section class="page ${i===0?'active':''}" id="page-${p[0]}"></section>`).join('')}
-window.showPage=id=>{if(!can(id))return toast('Sin permiso');document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));$('page-'+id).classList.add('active');[...$('nav').children].find(b=>b.textContent.toLowerCase().includes(pages.find(p=>p[0]===id)[1].toLowerCase()))?.classList.add('active');render()};
-function render(){if(!uid())return;renderDashboard();renderProductos();renderClientes();renderPresupuestos();renderProduccion();renderInventario();renderCaja();renderGastos();renderUsuarios();renderActividad();renderConfig()}
-function renderDashboard(){let el=$('page-dashboard');if(!el)return;let pendientes=sum(state.presupuestos.filter(p=>p.estado==='pendiente'),p=>p.total),confirmados=sum(state.presupuestos.filter(p=>['confirmado','produccion'].includes(p.estado)),p=>p.total),caja=sum(state.caja,m=>m.tipo==='ingreso'?m.monto:-m.monto),stockBajo=state.inventario.filter(x=>Number(x.cantidad)<=Number(x.minimo||0)).length;el.innerHTML=`<div class="metrics"><div class="metric"><small>Caja</small><strong>${fmt(caja)}</strong></div><div class="metric"><small>Presup. pendientes</small><strong>${fmt(pendientes)}</strong></div><div class="metric"><small>Confirmados</small><strong>${fmt(confirmados)}</strong></div><div class="metric"><small>Stock bajo</small><strong>${stockBajo}</strong></div></div><div class="card"><b>Próximas entregas</b>${list(state.ordenes.filter(o=>o.estado!=='finalizado').slice(0,6),o=>`<div class="li"><div class="info"><div class="name">${o.numero||''} · ${o.producto||o.descripcion}</div><div class="sub">${o.cliente||''} · entrega ${o.fechaEntrega||'a definir'}</div></div><span class="badge b-${o.estado}">${o.estado}</span></div>`)}</div>`}
-function sum(a,f){return a.reduce((s,x)=>s+Number(f(x)||0),0)}function list(a,f){return a.length?a.map(f).join(''):'<div class="card" style="text-align:center;color:var(--muted)">Sin datos</div>'}
-function imgOf(p){return (p.fotos&&p.fotos[0])?`<img src="${p.fotos[0]}">`:'<i class="ti ti-photo"></i>'}
-function renderProductos(){let el=$('page-productos');if(!el)return;el.innerHTML=`<div class="head"><h2>Productos</h2><button class="btn p sm" onclick="openProducto()"><i class="ti ti-plus"></i>Nuevo</button></div><div class="frow"><input placeholder="Buscar por código, nombre o material..." oninput="filterCards('producto-card',this.value)"></div>${list(state.productos,p=>`<div class="prod-card producto-card card" data-q="${q(p.codigo,p.nombre,p.materiales,p.terminacion)}" onclick="viewProducto('${p.id}')"><div class="thumb">${imgOf(p)}</div><div style="display:flex;justify-content:space-between;gap:8px"><div><b>${p.nombre}</b><div class="sub">${p.codigo||''} · ${p.medidas||''}</div></div><b>${fmt(p.precio)}</b></div><div class="chips"><span class="chip">Stock ${p.stock||0}</span><span class="chip">${p.terminacion||'sin terminación'}</span><span class="chip">${p.tiempo||'?'} días</span></div></div>`)}`}
-window.filterCards=(cls,val)=>document.querySelectorAll('.'+cls).forEach(e=>e.style.display=e.dataset.q.includes(String(val).toLowerCase())?'block':'none');function q(...x){return x.join(' ').toLowerCase()}
-function renderClientes(){let el=$('page-clientes');if(!el)return;el.innerHTML=`<div class="head"><h2>Clientes</h2><button class="btn p sm" onclick="openCliente()"><i class="ti ti-plus"></i>Nuevo</button></div>${list(state.clientes,c=>`<div class="li"><div class="info"><div class="name">${c.nombre}</div><div class="sub">${c.tel||''} · ${c.email||''}</div></div><button class="btn sm" onclick="openCliente('${c.id}')">Editar</button></div>`)}`}
-function renderPresupuestos(){let el=$('page-presupuestos');if(!el)return;el.innerHTML=`<div class="head"><h2>Presupuestos</h2><button class="btn p sm" onclick="openPresupuesto()"><i class="ti ti-plus"></i>Nuevo</button></div>${list(state.presupuestos,p=>`<div class="li"><div class="info"><div class="name">${p.numero||''} · ${p.descripcion||'Presupuesto'}</div><div class="sub">${clienteName(p.clienteId)} · ${fmt(p.total)}</div></div><span class="badge b-${p.estado}">${p.estado}</span><button class="btn sm" onclick="viewPresupuesto('${p.id}')">Ver</button></div>`)}`}
-function clienteName(id){return (state.clientes.find(c=>c.id===id)||{}).nombre||'Sin cliente'}
-function renderProduccion(){let el=$('page-produccion');if(!el)return;let start=new Date();start.setDate(1);let days=new Date(start.getFullYear(),start.getMonth()+1,0).getDate();let cal='';for(let d=1;d<=days;d++){let fecha=start.getFullYear()+'-'+String(start.getMonth()+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');let tareas=state.ordenes.filter(o=>o.fechaInicio<=fecha&&o.fechaEntrega>=fecha);cal+=`<div class="day"><b>${d}</b>${tareas.map(t=>`<div class="task">${t.numero||''}</div>`).join('')}</div>`}el.innerHTML=`<div class="head"><h2>Producción</h2><button class="btn p sm" onclick="openOrden()"><i class="ti ti-plus"></i>Orden manual</button></div><div class="card"><b>Calendario mensual</b><div class="calgrid" style="margin-top:10px">${cal}</div></div>${list(state.ordenes,o=>`<div class="li"><div class="info"><div class="name">${o.numero||''} · ${o.producto||o.descripcion}</div><div class="sub">${o.cliente||''} · ${o.fechaInicio||''} → ${o.fechaEntrega||''}</div></div><span class="badge b-${o.estado}">${o.estado}</span><button class="btn sm" onclick="openOrden('${o.id}')">Editar</button></div>`)}`}
-function renderInventario(){let el=$('page-inventario');if(!el)return;el.innerHTML=`<div class="head"><h2>Inventario</h2><button class="btn p sm" onclick="openMaterial()"><i class="ti ti-plus"></i>Material</button></div>${list(state.inventario,m=>`<div class="li"><div class="info"><div class="name">${m.nombre}</div><div class="sub">${m.cantidad||0} ${m.unidad||''} · mínimo ${m.minimo||0}</div></div><span class="badge">${Number(m.cantidad)<=Number(m.minimo||0)?'⚠ Bajo':'✓ OK'}</span><button class="btn sm" onclick="openMaterial('${m.id}')">Editar</button></div>`)}`}
-function renderCaja(){let el=$('page-caja');if(!el)return;let saldo=sum(state.caja,m=>m.tipo==='ingreso'?m.monto:-m.monto);el.innerHTML=`<div class="metrics"><div class="metric"><small>Saldo</small><strong>${fmt(saldo)}</strong></div><div class="metric"><small>Movimientos</small><strong>${state.caja.length}</strong></div></div><div class="head"><h2>Caja</h2><button class="btn p sm" onclick="openCaja()">Nuevo</button></div>${list([...state.caja].sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||'')),m=>`<div class="li"><div class="info"><div class="name">${m.desc}</div><div class="sub">${m.fecha||''}</div></div><b style="color:${m.tipo==='ingreso'?'var(--accent)':'var(--danger)'}">${m.tipo==='ingreso'?'+':'-'}${fmt(m.monto)}</b></div>`)}`}
-function renderGastos(){let el=$('page-gastos');if(!el)return;el.innerHTML=`<div class="head"><h2>Gastos</h2><button class="btn p sm" onclick="openGasto()">Nuevo</button></div>${list([...state.gastos].sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||'')),g=>`<div class="li"><div class="info"><div class="name">${g.desc}</div><div class="sub">${g.cat||''} · ${g.fecha||''}</div></div><b style="color:var(--danger)">${fmt(g.monto)}</b></div>`)}`}
-function renderUsuarios(){let el=$('page-usuarios');if(!el)return;el.innerHTML=`<div class="head"><h2>Usuarios</h2><button class="btn p sm" onclick="openUsuario()">Nuevo</button></div>${list(state.usuarios,u=>`<div class="li"><div class="info"><div class="name">${u.nombre||u.email}</div><div class="sub">${u.email} · ${u.rol}</div></div><button class="btn sm" onclick="openUsuario('${u.id}')">Editar</button></div>`)}`}
-function renderActividad(){let el=$('page-actividad');if(!el)return;el.innerHTML=`<div class="head"><h2>Actividad</h2></div>${list(state.historial.slice().sort((a,b)=>b.fecha-a.fecha).slice(0,50),h=>`<div class="li"><div class="info"><div class="name">${h.action}</div><div class="sub">${h.usuario||''} · ${new Date(h.fecha).toLocaleString('es-AR')}</div></div></div>`)}`}
-function renderConfig(){let el=$('page-config');if(!el)return;el.innerHTML=`<div class="head"><h2>Configuración</h2></div><div class="card"><b>Datos empresa</b><p style="color:var(--muted);margin-top:8px">Pendiente: logo, colores PDF, pie de página, teléfonos y datos comerciales.</p></div>`}
-function makeOverlay(id,title,html,save){let existing=$(id);if(existing)existing.remove();let o=document.createElement('div');o.className='overlay open';o.id=id;o.innerHTML=`<div class="sheet"><div class="sheet-title"><span>${title}</span><button class="close" onclick="closeOv('${id}')">×</button></div>${html}<div class="actions"><button class="btn" onclick="closeOv('${id}')">Cancelar</button><button class="btn p" onclick="${save}">Guardar</button></div></div>`;o.addEventListener('click',e=>{if(e.target===o)closeOv(id)});$('overlays').appendChild(o)}
-window.closeOv=id=>$(id)?.remove();
-window.openProducto=id=>{let p=state.productos.find(x=>x.id===id)||{};makeOverlay('ov-prod',id?'Editar producto':'Nuevo producto',`
-<div class="grid2"><div class="frow"><label>Código</label><input id="prod-codigo" value="${p.codigo||nextCode('PR',state.productos)}"></div><div class="frow"><label>Nombre *</label><input id="prod-nombre" value="${p.nombre||''}"></div></div>
-<div class="frow"><label>Descripción corta</label><textarea id="prod-desc" rows="2">${p.desc||''}</textarea></div>
-<div class="grid2"><div class="frow"><label>Categoría</label><input id="prod-cat" value="${p.categoria||''}"></div><div class="frow"><label>Estado</label><select id="prod-estado"><option value="stock" ${p.estado==='stock'?'selected':''}>En stock</option><option value="sinstock" ${p.estado==='sinstock'?'selected':''}>Sin stock</option><option value="fabricar" ${p.estado==='fabricar'?'selected':''}>A fabricar</option><option value="descontinuado" ${p.estado==='descontinuado'?'selected':''}>Descontinuado</option></select></div></div>
-<div class="slabel">Medidas</div>
-<div class="grid2"><div class="frow"><label>Alto</label><input id="prod-alto" type="number" value="${p.alto||''}"></div><div class="frow"><label>Ancho</label><input id="prod-ancho" type="number" value="${p.ancho||''}"></div></div>
-<div class="grid2"><div class="frow"><label>Profundidad</label><input id="prod-prof" type="number" value="${p.prof||''}"></div><div class="frow"><label>Unidad</label><select id="prod-unidad"><option value="cm" ${(p.unidad||'cm')==='cm'?'selected':''}>cm</option><option value="mm" ${p.unidad==='mm'?'selected':''}>mm</option><option value="m" ${p.unidad==='m'?'selected':''}>m</option></select></div></div>
-<div class="frow"><label>Materiales (describí cada uno)</label><textarea id="prod-materiales" rows="3" placeholder="Ej: Petiribí 2 placas, Hierro 20x20 8 metros...">${p.materiales||''}</textarea></div>
-<div class="frow"><label>Terminación</label><input id="prod-terminacion" value="${p.terminacion||''}" placeholder="Ej: Pintura a horno blanco mate"></div>
-<div class="slabel">Logística y producción</div>
-<div class="grid2"><div class="frow"><label>Envío a domicilio</label><select id="prod-entrega"><option value="si" ${p.entrega==='si'?'selected':''}>Sí</option><option value="no" ${p.entrega==='no'?'selected':''}>No</option><option value="consultar" ${p.entrega==='consultar'?'selected':''}>A consultar</option></select></div><div class="frow"><label>Stock disponible</label><input id="prod-stock" type="number" value="${p.stock||0}"></div></div>
-<div class="grid2"><div class="frow"><label>Stock mínimo</label><input id="prod-stockmin" type="number" value="${p.stockMin||0}"></div><div class="frow"><label>Días fabricación</label><input id="prod-tiempo" type="number" value="${p.tiempo||''}"></div></div>
-<div class="slabel">Costos internos (solo vos)</div>
-<div class="grid2"><div class="frow"><label>Costo materia prima</label><input id="prod-cmat" type="number" value="${p.costoMaterial||0}" oninput="calcProdPrecio()"></div><div class="frow"><label>Mano de obra</label><input id="prod-cmo" type="number" value="${p.costoMO||0}" oninput="calcProdPrecio()"></div></div>
-<div class="grid2"><div class="frow"><label>Ganancia</label><input id="prod-gan" type="number" value="${p.ganancia||0}" oninput="calcProdPrecio()"></div><div class="frow"><label>Precio venta</label><input id="prod-precio" type="number" value="${p.precio||0}"></div></div>
-<div id="prod-precio-info" style="font-size:12px;color:var(--muted);margin-bottom:10px"></div>
-<div class="frow"><label>Foto (URL)</label><input id="prod-foto" value="${(p.fotos&&p.fotos[0])||''}" placeholder="https://... o pegá un link de imagen"></div>
-`,`saveProducto('${id||''}')`)};
 
-window.calcProdPrecio=()=>{let mat=+($('prod-cmat')||{value:0}).value,mo=+($('prod-cmo')||{value:0}).value,gan=+($('prod-gan')||{value:0}).value;let total=mat+mo+gan;if($('prod-precio'))$('prod-precio').value=total;if($('prod-precio-info'))$('prod-precio-info').textContent=total?`Costo interno: ${fmt(mat+mo)} · Ganancia: ${fmt(gan)} · Precio: ${fmt(total)}`:'';};
+auth.onAuthStateChanged(async u=>{
+  if(!u){$('auth-screen').style.display='flex';$('app-screen').style.display='none';return}
+  $('auth-screen').style.display='none';$('app-screen').style.display='flex';
+  $('user-email').textContent=u.email;
+  await loadRole();initListeners();buildNav();render();
+});
 
-window.saveProducto=id=>{
-  let nombre=($('prod-nombre')||{}).value;if(!nombre)return toast('Ingresá el nombre');
-  let alto=+$('prod-alto').value,ancho=+$('prod-ancho').value,prof=+$('prod-prof').value,unidad=$('prod-unidad').value;
-  let medidas=[alto&&ancho?`${alto} × ${ancho}`:'',prof?`× ${prof}`:'',' '+unidad].filter(Boolean).join('').trim();
-  let data={codigo:$('prod-codigo').value,nombre,desc:$('prod-desc').value,categoria:$('prod-cat').value,estado:$('prod-estado').value,alto,ancho,prof,unidad,medidas,materiales:$('prod-materiales').value,terminacion:$('prod-terminacion').value,entrega:$('prod-entrega').value,stock:+$('prod-stock').value,stockMin:+$('prod-stockmin').value,tiempo:+$('prod-tiempo').value,costoMaterial:+$('prod-cmat').value,costoMO:+$('prod-cmo').value,ganancia:+$('prod-gan').value,precio:+$('prod-precio').value,fotos:$('prod-foto').value?[$('prod-foto').value]:[]};
-  id?upd('productos',id,data,()=>closeOv('ov-prod')):add('productos',data,()=>closeOv('ov-prod'))
+async function loadRole(){
+  let qs=await coll('usuarios').where('email','==',auth.currentUser.email).limit(1).get();
+  if(qs.empty){currentRole='admin';await coll('usuarios').add({nombre:'Administrador',email:auth.currentUser.email,rol:'admin',permisos:roles.admin,createdAt:Date.now()})}
+  else currentRole=qs.docs[0].data().rol||'admin';
+}
+
+function initListeners(){
+  unsubs.forEach(u=>u());unsubs=[];
+  Object.keys(state).forEach(c=>unsubs.push(coll(c).onSnapshot(s=>{state[c]=s.docs.map(d=>({id:d.id,...d.data()}));render()})));
+}
+
+function buildNav(){
+  let n=$('nav');n.innerHTML='';
+  PAGES.filter(p=>can(p[0])).forEach((p,i)=>{
+    let b=document.createElement('button');
+    b.innerHTML=`<i class="ti ${p[2]}"></i>${p[1]}`;
+    b.onclick=()=>showPage(p[0]);
+    if(i===0)b.classList.add('active');
+    n.appendChild(b);
+  });
+  $('pages').innerHTML=PAGES.filter(p=>can(p[0])).map((p,i)=>`<section class="page ${i===0?'active':''}" id="page-${p[0]}"></section>`).join('');
+}
+
+window.showPage=id=>{
+  if(!can(id))return toast('Sin permiso');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  $('page-'+id)&&$('page-'+id).classList.add('active');
+  let label=(PAGES.find(p=>p[0]===id)||[])[1]||'';
+  [...($('nav').children||[])].find(b=>b.textContent.trim().includes(label))?.classList.add('active');
+  render();
 };
+
+// ── RENDER ALL ────────────────────────────────────────────────────────────
+function render(){
+  if(!uid())return;
+  renderDashboard();renderStock();renderProductos();renderClientes();renderPresupuestos();
+  renderProduccion();renderInventario();renderCaja();renderGastos();
+  renderUsuarios();renderActividad();renderConfig();
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────────────────
+function renderDashboard(){
+  let el=$('page-dashboard');if(!el)return;
+  let caja=sum(state.caja,m=>m.tipo==='ingreso'?m.monto:-m.monto);
+  let stockBajo=state.inventario.filter(x=>Number(x.cantidad)<=Number(x.minimo||0)).length;
+  let byEstado=(e)=>state.presupuestos.filter(p=>p.estado===e);
+  let metricPre=(e,label,color)=>{let arr=byEstado(e);return `<div class="metric"><small>${label}</small><strong style="color:${color}">${fmt(sum(arr,p=>p.total))}</strong><div class="cnt">${arr.length} presupuesto${arr.length!==1?'s':''}</div></div>`};
+  el.innerHTML=`
+  <div class="metrics">
+    <div class="metric"><small>Saldo caja</small><strong style="color:var(--accent)">${fmt(caja)}</strong></div>
+    <div class="metric"><small>Stock bajo</small><strong style="color:var(--danger)">${stockBajo}</strong></div>
+  </div>
+  <div class="card"><b style="font-size:13px">Presupuestos por estado</b>
+  <div class="metrics" style="margin-top:10px;margin-bottom:0">
+    ${metricPre('pendiente','Pendientes','var(--warn)')}
+    ${metricPre('confirmado','Confirmados','var(--accent)')}
+    ${metricPre('produccion','En producción','var(--info)')}
+    ${metricPre('finalizado','Finalizados','#085041')}
+    ${metricPre('entregado','Entregados','#4C1D95')}
+    ${metricPre('cancelado','Cancelados','var(--danger)')}
+  </div></div>
+  <div class="card"><b>Próximas entregas</b>
+  ${state.ordenes.filter(o=>o.estado!=='finalizado').slice(0,5).map(o=>`<div class="li"><div class="info"><div class="name">${o.numero||''} · ${o.producto||''}</div><div class="sub">${o.cliente||''} · entrega ${o.fechaEntrega||'a definir'}</div></div><span class="badge b-${o.estado}">${o.estado}</span></div>`).join('')||'<p style="color:var(--muted);font-size:12px;margin-top:8px">Sin órdenes</p>'}
+  </div>`;
+}
+
+// ── STOCK ─────────────────────────────────────────────────────────────────
+function renderStock(){
+  let el=$('page-stock');if(!el)return;
+  let disponibles=state.productos.filter(p=>p.estado==='stock');
+  let totalValor=sum(disponibles,p=>(p.stock||0)*(p.precio||0));
+  let enStock=disponibles.length;
+  let sinStock=state.productos.filter(p=>p.estado==='sinstock').length;
+  let aFabricar=state.productos.filter(p=>p.estado==='fabricar').length;
+  el.innerHTML=`
+  <div class="head"><h2>Stock</h2></div>
+  <div class="metrics">
+    <div class="metric"><small>Valor total stock</small><strong style="color:var(--accent)">${fmt(totalValor)}</strong></div>
+    <div class="metric"><small>Productos cargados</small><strong>${state.productos.length}</strong></div>
+    <div class="metric"><small>En stock</small><strong style="color:var(--accent)">${enStock}</strong></div>
+    <div class="metric"><small>Sin stock</small><strong style="color:var(--danger)">${sinStock}</strong></div>
+    <div class="metric"><small>A fabricar</small><strong style="color:var(--info)">${aFabricar}</strong></div>
+  </div>
+  <div class="card">
+    ${state.productos.map(p=>{
+      let monto=(p.stock||0)*(p.precio||0);
+      return `<div class="li">
+        <div class="info">
+          <div class="name">${p.codigo||''} · ${p.nombre}</div>
+          <div class="sub">${p.categoria||''}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <span class="badge b-${p.estado||'stock'}">${p.estado||'stock'}</span>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px">Cant: ${p.stock||0} · ${fmt(p.precio||0)}</div>
+          <div style="font-size:12px;font-weight:700;color:var(--accent)">${fmt(monto)}</div>
+        </div>
+      </div>`;
+    }).join('')||'<p style="color:var(--muted);font-size:12px">Sin productos</p>'}
+  </div>`;
+}
+
+// ── PRODUCTOS ─────────────────────────────────────────────────────────────
+function renderProductos(){
+  let el=$('page-productos');if(!el)return;
+  el.innerHTML=`
+  <div class="head"><h2>Productos</h2><button class="btn p sm" onclick="openProducto()"><i class="ti ti-plus"></i>Nuevo</button></div>
+  <div class="frow"><input placeholder="Buscar código, nombre, categoría, material..." oninput="filterProds(this.value)"></div>
+  <div id="prod-list">
+  ${state.productos.map(p=>`
+    <div class="card prod-item" data-q="${esc(q(p.codigo,p.nombre,p.categoria,p.materiales,p.terminacion))}" style="cursor:pointer" onclick="viewProducto('${p.id}')">
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <div class="thumbsm" onclick="event.stopPropagation();openLbox('${esc(p.fotos&&p.fotos[0]||'')}')">${imgOf(p)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;justify-content:space-between;gap:6px">
+            <div><b>${p.nombre}</b><div class="sub">${p.codigo||''} · ${p.medidas||''}</div></div>
+            <div style="text-align:right;flex-shrink:0"><b>${fmt(p.precio)}</b><br><span class="badge b-${p.estado||'stock'}">${p.estado||'stock'}</span></div>
+          </div>
+          <div class="chips">
+            ${p.categoria?`<span class="chip">${p.categoria}</span>`:''}
+            ${p.terminacion?`<span class="chip">${p.terminacion}</span>`:''}
+            <span class="chip">Stock ${p.stock||0}</span>
+            ${p.tiempo?`<span class="chip">⏱ ${p.tiempo}h</span>`:''}
+          </div>
+        </div>
+      </div>
+    </div>`).join('')||'<div class="card" style="text-align:center;color:var(--muted)">Sin productos cargados</div>'}
+  </div>`;
+}
+window.filterProds=v=>{document.querySelectorAll('.prod-item').forEach(e=>e.style.display=e.dataset.q.includes(v.toLowerCase())?'block':'none')};
+function q(...x){return x.join(' ').toLowerCase()}
+window.openLbox=url=>{if(!url)return;$('lbox-img').src=url;$('lbox').classList.add('open')};
 
 window.viewProducto=id=>{
   let p=state.productos.find(x=>x.id===id);if(!p)return;
-  let estadoBadge={stock:'b-finalizado',sinstock:'b-cancelado',fabricar:'b-produccion',descontinuado:'b-cancelado'};
-  makeOverlay('ov-viewprod','Detalle producto',`
-  <div class="thumb">${imgOf(p)}</div>
+  let foto=p.fotos&&p.fotos[0]?`<div class="thumb" style="height:180px;margin-bottom:12px" onclick="openLbox('${esc(p.fotos[0])}')">${imgOf(p)}</div>`:'';
+  makeOverlay('ov-vprod','Producto',`
+  ${foto}
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div><b style="font-size:16px">${p.nombre}</b><div class="sub">${p.codigo||''}</div></div>
-      <span class="badge ${estadoBadge[p.estado]||'b-pendiente'}">${p.estado||'stock'}</span>
+      <div><b style="font-size:16px">${p.nombre}</b><div style="font-size:11px;color:var(--muted)">${p.codigo||''}</div></div>
+      <span class="badge b-${p.estado||'stock'}">${p.estado||'stock'}</span>
     </div>
-    <p style="margin-top:8px;color:var(--muted)">${p.desc||''}</p>
-    <div class="chips" style="margin-top:10px">
+    ${p.categoria?`<div style="font-size:12px;color:var(--muted);margin-top:4px">Categoría: ${p.categoria}</div>`:''}
+    ${p.desc?`<p style="margin-top:8px;font-size:13px">${p.desc}</p>`:''}
+    <div class="chips" style="margin-top:8px">
       ${p.medidas?`<span class="chip">📐 ${p.medidas}</span>`:''}
       ${p.terminacion?`<span class="chip">🎨 ${p.terminacion}</span>`:''}
-      ${p.categoria?`<span class="chip">${p.categoria}</span>`:''}
       <span class="chip">Stock: ${p.stock||0}</span>
-      ${p.tiempo?`<span class="chip">⏱ ${p.tiempo} días fab.</span>`:''}
+      ${p.tiempo?`<span class="chip">⏱ ${p.tiempo}h fab.</span>`:''}
       ${p.entrega==='si'?`<span class="chip">🚚 Con envío</span>`:''}
     </div>
   </div>
-  ${p.materiales?`<div class="card"><b>Materiales</b><p style="margin-top:6px;color:var(--muted)">${p.materiales}</p></div>`:''}
+  ${p.materiales?`<div class="card"><b>Materiales</b><p style="margin-top:6px;font-size:13px;color:var(--muted)">${p.materiales}</p></div>`:''}
   <div class="card"><b>Precio de venta: ${fmt(p.precio)}</b></div>
   <div class="grid2" style="margin-top:8px">
-    <button class="btn p" onclick="closeOv('ov-viewprod');openProducto('${id}')"><i class="ti ti-edit"></i>Editar</button>
-    <button class="btn d" onclick="del('productos','${id}');closeOv('ov-viewprod')"><i class="ti ti-trash"></i>Eliminar</button>
-  </div>`,`closeOv('ov-viewprod')`);
-  document.querySelector('#ov-viewprod .actions').remove()
+    <button class="btn p" onclick="closeOv('ov-vprod');openProducto('${id}')"><i class="ti ti-edit"></i>Editar</button>
+    <button class="btn" onclick="openProdPdf('${id}')"><i class="ti ti-file-text"></i>Ficha PDF</button>
+  </div>
+  <button class="btn d full" style="margin-top:8px" onclick="if(confirm('¿Eliminar producto?')){delDoc('productos','${id}');closeOv('ov-vprod')}"><i class="ti ti-trash"></i>Eliminar</button>
+  `,null,true);
 };
 
-window.openCliente=id=>{let c=state.clientes.find(x=>x.id===id)||{};makeOverlay('ov-cli',id?'Editar cliente':'Nuevo cliente',`<div class="frow"><label>Nombre *</label><input id="cli-nombre" value="${c.nombre||''}"></div><div class="grid2"><div class="frow"><label>Teléfono</label><input id="cli-tel" value="${c.tel||''}"></div><div class="frow"><label>Email</label><input id="cli-email" value="${c.email||''}"></div></div><div class="frow"><label>Notas</label><textarea id="cli-notas">${c.notas||''}</textarea></div>`,`saveCliente('${id||''}')`)};
-window.saveCliente=id=>{let d={nombre:$('cli-nombre').value,tel:$('cli-tel').value,email:$('cli-email').value,notas:$('cli-notas').value};if(!d.nombre)return toast('Ingresá el nombre');id?upd('clientes',id,d,()=>closeOv('ov-cli')):add('clientes',d,()=>closeOv('ov-cli'))};
+window.openProdPdf=id=>{
+  let p=state.productos.find(x=>x.id===id);if(!p)return;
+  $('pdf-title').textContent='Ficha de producto';
+  let foto=p.fotos&&p.fotos[0]?`<img src="${esc(p.fotos[0])}" style="width:100%;max-height:220px;object-fit:contain;border-radius:8px;margin-bottom:14px">`:'';
+  let disp=p.estado==='stock'?`En stock (${p.stock||0} unidades)`:p.estado==='fabricar'?'A fabricar bajo pedido':p.estado==='sinstock'?'Sin stock':'Consultar disponibilidad';
+  currentDocText=`${p.nombre}\nCódigo: ${p.codigo||''}\nPrecio: ${fmt(p.precio)}\nDisponibilidad: ${disp}`;
+  $('pdf-content').innerHTML=`<div class="PR">${foto}
+  <div class="PRhead"><div><h1>${p.nombre}</h1><small>Código: ${p.codigo||''}</small></div><div style="text-align:right"><small>Un Atelier · 351 233-3230</small></div></div>
+  ${p.categoria?`<p><b>Categoría:</b> ${p.categoria}</p>`:''}
+  ${p.desc?`<p style="margin-top:8px"><b>Descripción:</b> ${p.desc}</p>`:''}
+  ${p.medidas?`<p style="margin-top:6px"><b>Medidas:</b> ${p.medidas}</p>`:''}
+  ${p.materiales?`<p style="margin-top:6px"><b>Materiales:</b> ${p.materiales}</p>`:''}
+  ${p.terminacion?`<p style="margin-top:6px"><b>Terminación:</b> ${p.terminacion}</p>`:''}
+  <p style="margin-top:6px"><b>Disponibilidad:</b> ${disp}</p>
+  <div class="PRtotal" style="margin-top:14px"><span>Precio</span><strong>${fmt(p.precio)}</strong></div>
+  <p style="margin-top:12px;font-size:11px;color:#888">Un Atelier · Fede Gomez Friera · 351 233-3230</p>
+  </div>`;
+  $('pdf').classList.add('open');
+};
+
+window.openProducto=id=>{
+  let p=state.productos.find(x=>x.id===id)||{};
+  let catsOpts=CATS.map(c=>`<option ${(p.categoria||''===c)?'selected':''} value="${c}">${c}</option>`).join('');
+  makeOverlay('ov-prod',id?'Editar producto':'Nuevo producto',`
+  <div class="grid2">
+    <div class="frow"><label>Código</label><input id="prod-codigo" value="${esc(p.codigo||nextCode('PR',state.productos))}"></div>
+    <div class="frow"><label>Nombre *</label><input id="prod-nombre" value="${esc(p.nombre||'')}"></div>
+  </div>
+  <div class="frow"><label>Categoría</label>
+    <select id="prod-cat" onchange="checkNewCat(this)">
+      ${catsOpts}
+      <option value="_nueva">+ Nueva categoría</option>
+    </select>
+  </div>
+  <div id="nueva-cat-wrap" style="display:none" class="frow"><label>Nueva categoría</label><input id="nueva-cat" placeholder="Nombre de categoría"></div>
+  <div class="frow"><label>Descripción</label><textarea id="prod-desc" rows="2">${esc(p.desc||'')}</textarea></div>
+  <div class="slabel">Estado</div>
+  <div class="frow"><label>Estado del producto</label>
+    <select id="prod-estado" onchange="onProdEstadoChange(this.value)">
+      <option value="stock" ${(p.estado||'stock')==='stock'?'selected':''}>En stock</option>
+      <option value="sinstock" ${p.estado==='sinstock'?'selected':''}>Sin stock</option>
+      <option value="fabricar" ${p.estado==='fabricar'?'selected':''}>A fabricar</option>
+      <option value="reservado" ${p.estado==='reservado'?'selected':''}>Reservado</option>
+      <option value="vendido" ${p.estado==='vendido'?'selected':''}>Vendido</option>
+    </select>
+  </div>
+  <div id="prod-stock-wrap" class="frow"><label>Cantidad disponible</label><input id="prod-stock" type="number" min="0" value="${p.stock||0}"></div>
+  <div id="prod-horas-wrap" class="frow" style="display:none"><label>Horas estimadas de fabricación</label><input id="prod-tiempo" type="number" min="0" value="${p.tiempo||''}"></div>
+  <div class="slabel">Medidas</div>
+  <div class="grid3">
+    <div class="frow"><label>Alto</label><input id="prod-alto" type="number" value="${p.alto||''}"></div>
+    <div class="frow"><label>Ancho</label><input id="prod-ancho" type="number" value="${p.ancho||''}"></div>
+    <div class="frow"><label>Profundidad</label><input id="prod-prof" type="number" value="${p.prof||''}"></div>
+  </div>
+  <div class="frow"><label>Unidad</label>
+    <select id="prod-unidad"><option value="cm" ${(p.unidad||'cm')==='cm'?'selected':''}>cm</option><option value="mm" ${p.unidad==='mm'?'selected':''}>mm</option><option value="m" ${p.unidad==='m'?'selected':''}>m</option></select>
+  </div>
+  <div class="frow"><label>Materiales</label><textarea id="prod-materiales" rows="2" placeholder="Ej: Petiribí 2 placas, hierro 20x20 8m...">${esc(p.materiales||'')}</textarea></div>
+  <div class="frow"><label>Terminación</label><input id="prod-terminacion" value="${esc(p.terminacion||'')}"></div>
+  <div class="frow"><label>Entrega a domicilio</label>
+    <select id="prod-entrega"><option value="si" ${p.entrega==='si'?'selected':''}>Sí</option><option value="no" ${p.entrega==='no'?'selected':''}>No</option><option value="consultar" ${(p.entrega||'consultar')==='consultar'?'selected':''}>A consultar</option></select>
+  </div>
+  <div class="frow"><label>Foto (URL)</label><input id="prod-foto" value="${esc(p.fotos&&p.fotos[0]||'')}" placeholder="https://..."></div>
+  <div class="slabel">Costos internos (solo vos)</div>
+  <div class="grid2">
+    <div class="frow"><label>Costo material</label>${moneyInput('prod-cmat',p.costoMaterial,'fmtMoneyInput')}</div>
+    <div class="frow"><label>Mano de obra</label>${moneyInput('prod-cmo',p.costoMO,'fmtMoneyInput')}</div>
+  </div>
+  <div class="grid2">
+    <div class="frow"><label>Ganancia</label>${moneyInput('prod-gan',p.ganancia,'calcProdPrecio')}</div>
+    <div class="frow"><label>Precio venta</label>${moneyInput('prod-precio',p.precio,'fmtMoneyInput')}</div>
+  </div>
+  <div id="prod-precio-info" style="font-size:11px;color:var(--muted);margin-bottom:8px"></div>
+  <div class="sactions">
+    <button class="btn" onclick="closeOv('ov-prod')">Cancelar</button>
+    <button class="btn p" onclick="saveProducto('${id||''}')">Guardar</button>
+  </div>`,null,false,true);
+  // set initial state
+  setTimeout(()=>onProdEstadoChange(p.estado||'stock'),50);
+};
+
+window.checkNewCat=sel=>{$('nueva-cat-wrap').style.display=sel.value==='_nueva'?'block':'none'};
+window.onProdEstadoChange=est=>{
+  let sw=$('prod-stock-wrap'),hw=$('prod-horas-wrap'),si=$('prod-stock');
+  if(!sw)return;
+  sw.style.display=est==='sinstock'?'none':'block';
+  hw.style.display=est==='fabricar'?'block':'none';
+  if(est==='sinstock'&&si)si.value=0;
+};
+window.calcProdPrecio=el=>{
+  fmtMoneyInput(el);
+  let mat=getM('prod-cmat'),mo=getM('prod-cmo'),gan=getM('prod-gan');
+  let tot=mat+mo+gan;
+  if($('prod-precio'))$('prod-precio').value=tot?fmtInput(tot):'';
+  if($('prod-precio-info'))$('prod-precio-info').textContent=tot?`Costo: ${fmt(mat+mo)} · Ganancia: ${fmt(gan)} · Precio: ${fmt(tot)}`:'';
+};
+window.saveProducto=id=>{
+  let nombre=($('prod-nombre')||{}).value;if(!nombre)return toast('Ingresá el nombre');
+  let cat=$('prod-cat').value==='_nueva'?($('nueva-cat')&&$('nueva-cat').value||'Otros'):$('prod-cat').value;
+  let est=$('prod-estado').value;
+  let alto=+$('prod-alto').value,ancho=+$('prod-ancho').value,prof=+$('prod-prof').value,u=$('prod-unidad').value;
+  let partes=[];if(alto&&ancho)partes.push(`${alto} × ${ancho}`);if(prof)partes.push(`× ${prof}`);
+  let medidas=partes.join(' ')+(partes.length?' '+u:'');
+  let data={codigo:$('prod-codigo').value,nombre,desc:$('prod-desc').value,categoria:cat,estado:est,
+    alto,ancho,prof,unidad:u,medidas,materiales:$('prod-materiales').value,terminacion:$('prod-terminacion').value,
+    entrega:$('prod-entrega').value,stock:est==='sinstock'?0:+$('prod-stock').value,
+    tiempo:+$('prod-tiempo').value||null,costoMaterial:getM('prod-cmat'),costoMO:getM('prod-cmo'),
+    ganancia:getM('prod-gan'),precio:getM('prod-precio'),fotos:$('prod-foto').value?[$('prod-foto').value]:[]};
+  id?updDoc('productos',id,data,()=>closeOv('ov-prod')):addDoc2('productos',data,()=>closeOv('ov-prod'));
+};
+
+// ── CLIENTES ──────────────────────────────────────────────────────────────
+function renderClientes(){
+  let el=$('page-clientes');if(!el)return;
+  el.innerHTML=`<div class="head"><h2>Clientes</h2><button class="btn p sm" onclick="openCliente()"><i class="ti ti-plus"></i>Nuevo</button></div>
+  ${state.clientes.map(c=>`<div class="li"><div class="info"><div class="name">${c.nombre}</div><div class="sub">${c.tel||''} ${c.email?'· '+c.email:''}</div></div><button class="btn sm" onclick="openCliente('${c.id}')">Editar</button></div>`).join('')||'<div class="card" style="color:var(--muted);text-align:center">Sin clientes</div>'}`;
+}
+window.openCliente=id=>{
+  let c=state.clientes.find(x=>x.id===id)||{};
+  makeOverlay('ov-cli',id?'Editar cliente':'Nuevo cliente',`
+  <div class="frow"><label>Nombre *</label><input id="cli-nombre" value="${esc(c.nombre||'')}"></div>
+  <div class="grid2">
+    <div class="frow"><label>Teléfono</label><input id="cli-tel" value="${esc(c.tel||'')}"></div>
+    <div class="frow"><label>Email</label><input id="cli-email" value="${esc(c.email||'')}"></div>
+  </div>
+  <div class="frow"><label>Notas</label><textarea id="cli-notas" rows="2">${esc(c.notas||'')}</textarea></div>
+  <div class="sactions"><button class="btn" onclick="closeOv('ov-cli')">Cancelar</button><button class="btn p" onclick="saveCli('${id||''}')">Guardar</button></div>`,null,false,true);
+};
+window.saveCli=id=>{
+  let d={nombre:$('cli-nombre').value,tel:$('cli-tel').value,email:$('cli-email').value,notas:$('cli-notas').value};
+  if(!d.nombre)return toast('Ingresá el nombre');
+  id?updDoc('clientes',id,d,()=>closeOv('ov-cli')):addDoc2('clientes',d,()=>closeOv('ov-cli'));
+};
+
+// ── PRESUPUESTOS ──────────────────────────────────────────────────────────
+function renderPresupuestos(){
+  let el=$('page-presupuestos');if(!el)return;
+  el.innerHTML=`<div class="head"><h2>Presupuestos</h2><button class="btn p sm" onclick="openPresupuesto()"><i class="ti ti-plus"></i>Nuevo</button></div>
+  ${state.presupuestos.map(p=>`<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+      <div style="flex:1;min-width:0">
+        <div class="name">${p.numero||''} · ${p.descripcion||'Presupuesto'}</div>
+        <div class="sub">${clienteName(p.clienteId)} · ${fmt(p.total)}${p.fechaEntrega?' · 📅 '+p.fechaEntrega:''}</div>
+      </div>
+      <span class="badge b-${p.estado}">${p.estado}</span>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+      <button class="btn sm" onclick="viewPresupuesto('${p.id}')"><i class="ti ti-eye"></i>Ver</button>
+      <button class="btn sm" onclick="openPresupuesto('${p.id}')"><i class="ti ti-edit"></i>Editar</button>
+      <button class="btn sm" onclick="openCambiarEstado('${p.id}')"><i class="ti ti-refresh"></i>Estado</button>
+      <button class="btn sm d" onclick="confirmarBorrar('presupuestos','${p.id}')"><i class="ti ti-trash"></i>Borrar</button>
+    </div>
+  </div>`).join('')||'<div class="card" style="color:var(--muted);text-align:center">Sin presupuestos</div>'}`;
+}
+
+window.confirmarBorrar=(col,id)=>{if(confirm('¿Confirmar eliminación? Esta acción no se puede deshacer.'))delDoc(col,id)};
+
+window.openCambiarEstado=id=>{
+  let p=state.presupuestos.find(x=>x.id===id);if(!p)return;
+  makeOverlay('ov-estado','Cambiar estado',`
+  <div class="frow"><label>Presupuesto</label><div style="font-weight:600">${p.numero||''} · ${clienteName(p.clienteId)}</div></div>
+  <div class="frow"><label>Estado actual</label><span class="badge b-${p.estado}">${p.estado}</span></div>
+  <div class="slabel">Nuevo estado</div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    ${ESTADOS_PRE.map(e=>`<button class="btn ${e===p.estado?'p':''}" onclick="cambiarEstado('${id}','${e}')">${e.charAt(0).toUpperCase()+e.slice(1)}</button>`).join('')}
+  </div>
+  <div class="sactions"><button class="btn" onclick="closeOv('ov-estado')">Cancelar</button></div>`,null,false,true);
+};
+window.cambiarEstado=(id,estado)=>{
+  let p=state.presupuestos.find(x=>x.id===id);if(!p)return;
+  let wasConfirmado=p.estado!=='confirmado'&&estado==='confirmado';
+  updDoc('presupuestos',id,{estado},()=>{
+    closeOv('ov-estado');
+    if(wasConfirmado){crearOrdenes(id,{...p,estado:'confirmado'})}
+  });
+};
 
 window.openPresupuesto=id=>{
   let p=state.presupuestos.find(x=>x.id===id)||{};
   presupItems=JSON.parse(JSON.stringify(p.items||[]));
-  pagoItems=JSON.parse(JSON.stringify(p.pagos||[]));
+  let cliOpts=state.clientes.map(c=>`<option value="${c.id}" ${p.clienteId===c.id?'selected':''}>${c.nombre}</option>`).join('');
   makeOverlay('ov-pre',id?'Editar presupuesto':'Nuevo presupuesto',`
-  <div class="slabel">Emisor</div>
   <div style="display:flex;gap:8px;margin-bottom:12px">
     <button type="button" id="em-atelier" class="btn ${(!p.emisor||p.emisor==='atelier')?'p':''}" onclick="setEmisor('atelier')" style="flex:1">Un Atelier</button>
     <button type="button" id="em-fede" class="btn ${p.emisor==='fede'?'p':''}" onclick="setEmisor('fede')" style="flex:1">Fede Gomez Friera</button>
   </div>
   <input type="hidden" id="pre-emisor" value="${p.emisor||'atelier'}">
-  <div class="frow"><label>Cliente</label><select id="pre-cliente"><option value="">Seleccionar</option>${state.clientes.map(c=>`<option ${p.clienteId===c.id?'selected':''} value="${c.id}">${c.nombre}</option>`).join('')}</select></div>
-  <div class="frow"><label>Descripción del trabajo</label><input id="pre-desc" value="${p.descripcion||''}"></div>
+  <div class="frow"><label>Cliente</label><select id="pre-cliente"><option value="">Seleccionar</option>${cliOpts}</select></div>
+  <div class="frow"><label>Descripción del trabajo</label><input id="pre-desc" value="${esc(p.descripcion||'')}"></div>
+  <div class="frow"><label>Fecha de entrega comprometida *</label><input id="pre-fecha-entrega" type="date" value="${p.fechaEntrega||today()}"></div>
   <div class="slabel">Productos del catálogo</div>
-  <div class="search frow" style="position:relative"><input id="pre-prod-search" placeholder="Buscar por código, nombre o categoría..." oninput="prodDrop(this.value)" onfocus="prodDrop(this.value)" autocomplete="off"><div class="drop" id="pre-prod-drop"></div></div>
+  <div class="search frow" style="position:relative">
+    <input id="pre-prod-search" placeholder="Buscar producto..." oninput="prodDrop(this.value)" onfocus="prodDrop(this.value)" autocomplete="off">
+    <div class="drop" id="pre-prod-drop"></div>
+  </div>
   <div id="pre-items"></div>
   <div class="slabel">Servicio manual adicional</div>
-  <div class="grid2"><div class="frow"><label>Descripción</label><input id="pre-serv-desc" placeholder="Ej: instalación, diseño"></div><div class="frow"><label>Monto $</label><input id="pre-serv-monto" type="number" placeholder="0"></div></div>
+  <div class="grid2">
+    <div class="frow"><label>Descripción</label><input id="pre-serv-desc" placeholder="Ej: instalación"></div>
+    <div class="frow"><label>Monto</label>${moneyInput('pre-serv-monto',0,'fmtMoneyInput')}</div>
+  </div>
   <button class="btn sm" onclick="addServicio()" style="margin-bottom:12px"><i class="ti ti-plus"></i>Agregar servicio</button>
-  <div class="slabel">Estado</div>
-  <select id="pre-estado" class="frow" style="width:100%;border:.5px solid var(--border);border-radius:8px;padding:11px 12px;font-size:15px;background:var(--bg);color:var(--text);margin-bottom:12px">
-    <option value="pendiente">Pendiente</option>
-    <option value="confirmado">Confirmado</option>
-    <option value="produccion">En producción</option>
-    <option value="finalizado">Finalizado</option>
-    <option value="entregado">Entregado</option>
-    <option value="cancelado">Cancelado</option>
-  </select>
-  <div class="slabel">Condiciones</div>
-  <div class="frow"><textarea id="pre-cond" rows="2">${p.condicion||'Presupuesto válido por 15 días.'}</textarea></div>
-  <div class="grid2"><div class="frow"><label>Próximo pago</label><input id="pre-prox" type="date" value="${p.proxPago||today()}"></div><div class="frow"><label>Validez</label><select id="pre-validez"><option value="7">7 días</option><option value="15" ${(!p.validez||p.validez==='15')?'selected':''}>15 días</option><option value="30">30 días</option><option value="0">Sin vencimiento</option></select></div></div>
+  <div class="slabel">Estado y condiciones</div>
+  <div class="frow"><label>Estado</label>
+    <select id="pre-estado">
+      ${ESTADOS_PRE.map(e=>`<option value="${e}" ${(p.estado||'pendiente')===e?'selected':''}>${e.charAt(0).toUpperCase()+e.slice(1)}</option>`).join('')}
+    </select>
+  </div>
+  <div class="frow"><label>Condiciones</label><textarea id="pre-cond" rows="2">${esc(p.condicion||'Presupuesto válido por 15 días.')}</textarea></div>
+  <div class="grid2">
+    <div class="frow"><label>Próximo pago</label><input id="pre-prox" type="date" value="${p.proxPago||today()}"></div>
+    <div class="frow"><label>Validez</label><select id="pre-validez"><option value="7">7 días</option><option value="15" ${(!p.validez||p.validez==='15')?'selected':''}>15 días</option><option value="30">30 días</option><option value="0">Sin vencimiento</option></select></div>
+  </div>
   <div class="slabel">Entrega inicial (opcional)</div>
-  <div class="grid2"><div class="frow"><label>Monto $</label><input id="pre-adel" type="number" value="${(p.pagos&&p.pagos[0]&&p.pagos[0].monto)||''}"></div><div class="frow"><label>Forma de pago</label><select id="pre-pago"><option value="efectivo">Efectivo pesos</option><option value="dolares">Efectivo dólares</option><option value="transferencia">Transferencia</option><option value="mercadopago">Mercado Pago</option><option value="cheque">Cheque</option></select></div></div>
-  <div class="card"><b>Total: <span id="pre-total">$0</span></b></div>
-  `,`savePresupuesto('${id||''}')`);
-  $('pre-estado').value=p.estado||'pendiente';
+  <div class="grid2">
+    <div class="frow"><label>Monto</label>${moneyInput('pre-adel',p.pagos&&p.pagos[0]?p.pagos[0].monto:0,'fmtMoneyInput')}</div>
+    <div class="frow"><label>Forma de pago</label><select id="pre-pago">${MEDIOS.map(m=>`<option>${m}</option>`).join('')}</select></div>
+  </div>
+  <div class="card" style="margin-top:8px"><b>Total: <span id="pre-total">${fmt(p.total||0)}</span></b></div>
+  <div class="sactions"><button class="btn" onclick="closeOv('ov-pre')">Cancelar</button><button class="btn p" onclick="savePresupuesto('${id||''}')">Guardar</button></div>
+  `,null,false,true);
   renderPreItems();
 };
 
 window.setEmisor=e=>{$('pre-emisor').value=e;$('em-atelier').classList.toggle('p',e==='atelier');$('em-fede').classList.toggle('p',e==='fede')};
-window.prodDrop=v=>{let d=$('pre-prod-drop');let arr=state.productos.filter(p=>q(p.codigo,p.nombre,p.categoria,p.terminacion,p.materiales).includes(String(v).toLowerCase())).slice(0,8);d.innerHTML=arr.map(p=>`<div class="opt" onclick="addProdToPre('${p.id}')"><b>${p.nombre}</b><div class="sub">${p.codigo||''} · ${fmt(p.precio)} · ${p.medidas||''} · ${p.stock>0?'En stock':'A fabricar'}</div></div>`).join('')||'<div class="opt" style="color:var(--muted)">Sin resultados</div>';d.classList.add('open')};
-window.addProdToPre=id=>{let p=state.productos.find(x=>x.id===id);if(!p)return;let entrega=p.stock>0?'En stock (inmediata)':(p.tiempo?p.tiempo+' días de fabricación':'A consultar');presupItems.push({tipo:'producto',productoId:id,codigo:p.codigo,nombre:p.nombre,descripcion:p.desc,medidas:p.medidas,terminacion:p.terminacion,cantidad:1,precio:p.precio,tiempoEntrega:entrega});$('pre-prod-drop').classList.remove('open');$('pre-prod-search').value='';if(!$('pre-desc').value)$('pre-desc').value=p.nombre+(p.medidas?' '+p.medidas:'')+(p.terminacion?' '+p.terminacion:'');renderPreItems()};
-window.addServicio=()=>{let desc=$('pre-serv-desc').value,monto=+$('pre-serv-monto').value;if(!desc||!monto)return toast('Completá descripción y monto');presupItems.push({tipo:'servicio',nombre:desc,cantidad:1,precio:monto});$('pre-serv-desc').value='';$('pre-serv-monto').value='';renderPreItems()};
-window.rmPreItem=i=>{presupItems.splice(i,1);renderPreItems()};
-function renderPreItems(){let el=$('pre-items');if(!el)return;el.innerHTML=presupItems.map((x,i)=>`<div class="prodline"><div class="info"><b>${x.nombre}</b><div class="sub">${x.tipo==='producto'?((x.codigo?x.codigo+' · ':'')+( x.medidas||'')+(x.terminacion?' · '+x.terminacion:'')+(x.tiempoEntrega?' · '+x.tiempoEntrega:'')):'Servicio'} · ${fmt(x.precio)}</div></div><button class="btn sm d" onclick="rmPreItem(${i})">×</button></div>`).join('')||'<div style="color:var(--muted);font-size:12px;margin-bottom:8px">Sin ítems agregados</div>';let total=sum(presupItems,x=>x.precio*x.cantidad);let el2=$('pre-total');if(el2)el2.textContent=fmt(total)}
-
-window.savePresupuesto=id=>{
-  let total=sum(presupItems,x=>x.precio*x.cantidad),estado=$('pre-estado').value;
-  let adel=+$('pre-adel').value;
-  let d={numero:id?(state.presupuestos.find(x=>x.id===id)||{}).numero||nextCode('P',state.presupuestos):nextCode('P',state.presupuestos),clienteId:$('pre-cliente').value,descripcion:$('pre-desc').value,emisor:$('pre-emisor').value,items:presupItems,total,estado,condicion:$('pre-cond').value,proxPago:$('pre-prox').value,validez:$('pre-validez').value,pagos:adel?[{tipo:$('pre-pago').value,monto:adel,fecha:today()}]:[]};
-  let old=id?state.presupuestos.find(x=>x.id===id):null;
-  let after=pid=>{closeOv('ov-pre');if(estado==='confirmado'&&(!old||old.estado!=='confirmado')){if(adel)crearRecibo(pid,d);crearOrdenes(pid,d);}openBudgetPdf(pid,d)};
-  id?upd('presupuestos',id,d,()=>after(id)):add('presupuestos',d,after)
+window.prodDrop=v=>{
+  let d=$('pre-prod-drop');
+  let arr=state.productos.filter(p=>q(p.codigo,p.nombre,p.categoria,p.terminacion,p.materiales).includes(v.toLowerCase())).slice(0,8);
+  d.innerHTML=arr.map(p=>`<div class="opt" onclick="addProdToPre('${p.id}')"><b>${p.nombre}</b><div style="font-size:11px;color:var(--muted)">${p.codigo||''} · ${fmt(p.precio)} · ${p.medidas||''} · ${p.stock>0?'En stock':'A fabricar'}</div></div>`).join('')||`<div class="opt" style="color:var(--muted)">Sin resultados</div>`;
+  d.classList.add('open');
 };
-
+window.addProdToPre=id=>{
+  let p=state.productos.find(x=>x.id===id);if(!p)return;
+  let entrega=p.stock>0?'En stock':(p.tiempo?p.tiempo+'h de fabricación':'A consultar');
+  presupItems.push({tipo:'producto',productoId:id,codigo:p.codigo,nombre:p.nombre,descripcion:p.desc,medidas:p.medidas,terminacion:p.terminacion,cantidad:1,precio:p.precio,tiempoEntrega:entrega,horasFab:p.tiempo||0});
+  $('pre-prod-drop').classList.remove('open');$('pre-prod-search').value='';
+  if(!$('pre-desc').value)$('pre-desc').value=p.nombre+(p.medidas?' '+p.medidas:'')+(p.terminacion?' '+p.terminacion:'');
+  renderPreItems();
+};
+window.addServicio=()=>{
+  let desc=$('pre-serv-desc').value,monto=getM('pre-serv-monto');
+  if(!desc||!monto)return toast('Completá descripción y monto');
+  presupItems.push({tipo:'servicio',nombre:desc,cantidad:1,precio:monto});
+  $('pre-serv-desc').value='';$('pre-serv-monto').value='';renderPreItems();
+};
+window.rmPreItem=i=>{presupItems.splice(i,1);renderPreItems()};
+function renderPreItems(){
+  let el=$('pre-items');if(!el)return;
+  el.innerHTML=presupItems.map((x,i)=>`<div class="prodline">
+    <div class="info"><b>${x.nombre}</b>
+    <div style="font-size:11px;color:var(--muted)">${x.tipo==='producto'?[x.codigo,x.medidas,x.terminacion,x.tiempoEntrega].filter(Boolean).join(' · '):'Servicio manual'} · ${fmt(x.precio)}</div></div>
+    <button class="btn sm d" onclick="rmPreItem(${i})">×</button>
+  </div>`).join('')||'<div style="color:var(--muted);font-size:12px;margin-bottom:8px">Sin ítems</div>';
+  let total=presupItems.reduce((s,x)=>s+x.precio*x.cantidad,0);
+  let el2=$('pre-total');if(el2)el2.textContent=fmt(total);
+}
+window.savePresupuesto=id=>{
+  let fechaEntrega=$('pre-fecha-entrega').value;
+  if(!fechaEntrega)return toast('La fecha de entrega es obligatoria');
+  let total=presupItems.reduce((s,x)=>s+x.precio*x.cantidad,0);
+  let estado=$('pre-estado').value;
+  let adel=getM('pre-adel');
+  let d={numero:id?(state.presupuestos.find(x=>x.id===id)||{}).numero||nextCode('P',state.presupuestos):nextCode('P',state.presupuestos),clienteId:$('pre-cliente').value,descripcion:$('pre-desc').value,emisor:$('pre-emisor').value,items:presupItems,total,estado,fechaEntrega,condicion:$('pre-cond').value,proxPago:$('pre-prox').value,validez:$('pre-validez').value,pagos:adel?[{tipo:$('pre-pago').value,monto:adel,fecha:today()}]:[]};
+  let old=id?state.presupuestos.find(x=>x.id===id):null;
+  let after=pid=>{
+    closeOv('ov-pre');
+    if(estado==='confirmado'&&(!old||old.estado!=='confirmado')){if(adel)crearRecibo(pid,d);crearOrdenes(pid,d)}
+    openBudgetPdf(pid,d);
+  };
+  id?updDoc('presupuestos',id,d,()=>after(id)):addDoc2('presupuestos',d,after);
+};
 function crearRecibo(pid,p){
-  add('recibos',{numero:nextCode('R',state.recibos),presupuestoId:pid,clienteId:p.clienteId,total:p.total,monto:p.pagos[0].monto,saldo:p.total-p.pagos[0].monto,tipo:p.pagos[0].tipo,fecha:today()})
+  addDoc2('recibos',{numero:nextCode('R',state.recibos),presupuestoId:pid,clienteId:p.clienteId,total:p.total,monto:p.pagos[0].monto,saldo:p.total-p.pagos[0].monto,tipo:p.pagos[0].tipo,fecha:today()});
 }
 function crearOrdenes(pid,p){
   p.items.filter(i=>i.tipo==='producto').forEach(i=>{
-    let ini=today(),fin=addDays(ini,parseInt(i.tiempo||i.tiempoEntrega)||7);
-    add('ordenes',{numero:nextCode('OP',state.ordenes),presupuestoId:pid,cliente:clienteName(p.clienteId),producto:i.nombre,descripcion:i.descripcion||i.nombre,materiales:(state.productos.find(x=>x.id===i.productoId)||{}).materiales||'',terminacion:i.terminacion,cantidad:i.cantidad||1,fechaInicio:ini,fechaEntrega:fin,estado:'pendiente'})
-  })
-}
-function addDays(d,n){let x=new Date(d);x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)}
-
-function openBudgetPdf(id,p){
-  let c=state.clientes.find(x=>x.id===p.clienteId)||{};
-  let emisorNombre=p.emisor==='fede'?'Fede Gomez Friera':'Un Atelier';
-  let rows=(p.items||[]).map(i=>`<tr><td>${i.nombre}<br><small style="color:#666">${[i.medidas,i.terminacion,i.tiempoEntrega].filter(Boolean).join(' · ')}</small></td><td style="text-align:center">${i.cantidad||1}</td><td>${fmt(i.precio)}</td></tr>`).join('');
-  let adel=p.pagos&&p.pagos[0]?`<p style="margin-top:10px;font-size:13px">Entrega inicial: <b>${fmt(p.pagos[0].monto)}</b> (${p.pagos[0].tipo}) · Saldo: <b>${fmt(p.total-p.pagos[0].monto)}</b></p>`:'';
-  let validez=p.validez&&p.validez!=='0'?`<p style="margin-top:10px;color:#666;font-size:12px">⏱ Válido por ${p.validez} días.</p>`:'';
-  currentDocText=`${emisorNombre}\nPresupuesto ${p.numero}\nCliente: ${c.nombre||''}\nTotal: ${fmt(p.total)}\n${p.condicion||''}`;
-  $('pdf-content').innerHTML=`<div class="PR"><div class="PRhead"><div><h1>${emisorNombre}</h1><small>351 233-3230</small></div><div style="text-align:right"><b>${p.numero||''}</b><br><small>${today()}</small></div></div>${c.nombre?`<div class="card" style="margin-bottom:14px"><small>Cliente</small><br><b>${c.nombre}</b><br><small>${[c.tel,c.email].filter(Boolean).join(' · ')}</small></div>`:''}<p style="margin-bottom:14px">${p.descripcion||''}</p><table><thead><tr><th>Producto / Servicio</th><th>Cant.</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table><div class="PRtotal"><span>Total</span><strong>${fmt(p.total)}</strong></div>${adel}<p style="margin-top:14px;color:#555;font-size:13px">${p.condicion||''}</p>${validez}</div>`;
-  $('pdf').classList.add('open')
+    let ini=p.fechaEntrega||today();
+    let horas=i.horasFab||0;
+    let dias=Math.max(1,Math.ceil(horas/8));
+    let fin=p.fechaEntrega||addDays(ini,dias);
+    addDoc2('ordenes',{numero:nextCode('OP',state.ordenes),presupuestoId:pid,cliente:clienteName(p.clienteId),producto:i.nombre,descripcion:i.descripcion||i.nombre,materiales:(state.productos.find(x=>x.id===i.productoId)||{}).materiales||'',terminacion:i.terminacion,horasFab:i.horasFab||0,fechaInicio:ini,fechaEntrega:fin,estado:'pendiente'});
+  });
 }
 
 window.viewPresupuesto=id=>{let p=state.presupuestos.find(x=>x.id===id);if(p)openBudgetPdf(id,p)};
+function openBudgetPdf(id,p){
+  let c=state.clientes.find(x=>x.id===p.clienteId)||{};
+  let emisorNombre=p.emisor==='fede'?'Fede Gomez Friera':'Un Atelier';
+  let rows=(p.items||[]).map(i=>`<tr><td>${i.nombre}<br><small style="color:#777">${[i.medidas,i.terminacion,i.tiempoEntrega].filter(Boolean).join(' · ')}</small></td><td style="text-align:center">${i.cantidad||1}</td><td>${fmt(i.precio)}</td></tr>`).join('');
+  let adel=p.pagos&&p.pagos[0]?`<p style="margin-top:10px;font-size:13px">Entrega inicial: <b>${fmt(p.pagos[0].monto)}</b> (${p.pagos[0].tipo}) · Saldo: <b>${fmt(p.total-p.pagos[0].monto)}</b></p>`:'';
+  let valStr=p.validez&&p.validez!=='0'?`<p style="margin-top:10px;font-size:12px;color:#777">⏱ Válido por ${p.validez} días.</p>`:'';
+  currentDocText=`${emisorNombre}\n${p.numero||''}\nCliente: ${c.nombre||''}\nTotal: ${fmt(p.total)}\n${p.condicion||''}`;
+  $('pdf-title').textContent='Presupuesto '+p.numero;
+  $('pdf-content').innerHTML=`<div class="PR">
+  <div class="PRhead"><div><h1>${emisorNombre}</h1><small>351 233-3230</small></div><div style="text-align:right"><b>${p.numero||''}</b><br><small>${today()}</small></div></div>
+  ${c.nombre?`<div style="background:#f5f5f3;border-radius:8px;padding:10px 12px;margin-bottom:12px"><small>Cliente</small><br><b>${c.nombre}</b><br><small>${[c.tel,c.email].filter(Boolean).join(' · ')}</small></div>`:''}
+  <p style="margin-bottom:12px">${p.descripcion||''}</p>
+  ${p.fechaEntrega?`<p style="margin-bottom:10px;font-size:13px"><b>📅 Entrega comprometida:</b> ${p.fechaEntrega}</p>`:''}
+  <table><thead><tr><th>Producto / Servicio</th><th>Cant.</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table>
+  <div class="PRtotal"><span>Total</span><strong>${fmt(p.total)}</strong></div>
+  ${adel}<p style="margin-top:12px;color:#555;font-size:13px">${p.condicion||''}</p>${valStr}
+  </div>`;
+  $('pdf').classList.add('open');
+}
+
+// ── PRODUCCION ────────────────────────────────────────────────────────────
+function renderProduccion(){
+  let el=$('page-produccion');if(!el)return;
+  let now=new Date(),y=now.getFullYear(),m=now.getMonth();
+  let days=new Date(y,m+1,0).getDate();
+  let totalHoras=state.ordenes.filter(o=>o.estado!=='finalizado').reduce((s,o)=>s+(o.horasFab||0),0);
+  let cal='';
+  for(let d=1;d<=days;d++){
+    let fecha=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    let tareas=state.ordenes.filter(o=>o.fechaInicio<=fecha&&o.fechaEntrega>=fecha);
+    let horas=tareas.reduce((s,t)=>s+(t.horasFab||0),0);
+    let bg=horas===0?'var(--bg2)':horas<=8?'#DCEBFA':horas<=16?'#FAEEDA':'#FCEBEB';
+    cal+=`<div class="day" style="background:${bg}"><b>${d}</b>${tareas.map(t=>`<div class="task">${t.numero||''}</div>`).join('')}</div>`;
+  }
+  el.innerHTML=`
+  <div class="head"><h2>Producción</h2><button class="btn p sm" onclick="openOrden()"><i class="ti ti-plus"></i>Orden manual</button></div>
+  <div class="metrics">
+    <div class="metric"><small>Horas comprometidas</small><strong>${totalHoras}h</strong></div>
+    <div class="metric"><small>Órdenes activas</small><strong>${state.ordenes.filter(o=>o.estado!=='finalizado').length}</strong></div>
+  </div>
+  <div class="card">
+    <b>Calendario — ${now.toLocaleString('es-AR',{month:'long',year:'numeric'})}</b>
+    <div style="display:flex;gap:2px;margin:8px 0 4px">${['D','L','M','M','J','V','S'].map(d=>`<div style="flex:1;text-align:center;font-size:10px;color:var(--muted)">${d}</div>`).join('')}</div>
+    <div class="calgrid" style="margin-top:4px">${cal}</div>
+    <div style="display:flex;gap:8px;margin-top:8px;font-size:10px">
+      <span style="background:#DCEBFA;color:#0B416E;padding:2px 6px;border-radius:4px">≤8h</span>
+      <span style="background:#FAEEDA;color:#633806;padding:2px 6px;border-radius:4px">≤16h</span>
+      <span style="background:#FCEBEB;color:#791F1F;padding:2px 6px;border-radius:4px">&gt;16h</span>
+    </div>
+  </div>
+  ${state.ordenes.map(o=>`<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+      <div><b>${o.numero||''} · ${o.producto||''}</b><div class="sub">${o.cliente||''} · ${o.fechaInicio||''} → ${o.fechaEntrega||''} · ${o.horasFab||0}h</div></div>
+      <span class="badge b-${o.estado}">${o.estado}</span>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:8px">
+      <button class="btn sm" onclick="openOrden('${o.id}')"><i class="ti ti-edit"></i>Editar</button>
+      <button class="btn sm d" onclick="confirmarBorrar('ordenes','${o.id}')"><i class="ti ti-trash"></i>Borrar</button>
+    </div>
+  </div>`).join('')||'<div class="card" style="color:var(--muted);text-align:center">Sin órdenes</div>'}`;
+}
+window.openOrden=id=>{
+  let o=state.ordenes.find(x=>x.id===id)||{};
+  makeOverlay('ov-ord',id?'Editar orden':'Orden de producción',`
+  <div class="frow"><label>Número</label><input id="ord-num" value="${esc(o.numero||nextCode('OP',state.ordenes))}"></div>
+  <div class="frow"><label>Producto / trabajo</label><input id="ord-prod" value="${esc(o.producto||'')}"></div>
+  <div class="frow"><label>Cliente</label><input id="ord-cli" value="${esc(o.cliente||'')}"></div>
+  <div class="frow"><label>Materiales</label><textarea id="ord-mat" rows="2">${esc(o.materiales||'')}</textarea></div>
+  <div class="frow"><label>Terminación</label><input id="ord-term" value="${esc(o.terminacion||'')}"></div>
+  <div class="frow"><label>Horas estimadas de fabricación</label><input id="ord-horas" type="number" value="${o.horasFab||0}"></div>
+  <div class="grid2">
+    <div class="frow"><label>Fecha inicio</label><input id="ord-ini" type="date" value="${o.fechaInicio||today()}"></div>
+    <div class="frow"><label>Fecha entrega</label><input id="ord-fin" type="date" value="${o.fechaEntrega||today()}"></div>
+  </div>
+  <div class="frow"><label>Estado</label>
+    <select id="ord-est"><option value="pendiente">Pendiente</option><option value="proceso">En proceso</option><option value="pausado">Pausado</option><option value="finalizado">Finalizado</option></select>
+  </div>
+  <div class="frow"><label>Observaciones</label><textarea id="ord-obs" rows="2">${esc(o.observaciones||'')}</textarea></div>
+  <div class="sactions"><button class="btn" onclick="closeOv('ov-ord')">Cancelar</button><button class="btn p" onclick="saveOrden('${id||''}')">Guardar</button></div>`,null,false,true);
+  setTimeout(()=>{if($('ord-est'))$('ord-est').value=o.estado||'pendiente'},50);
+};
+window.saveOrden=id=>{
+  let d={numero:$('ord-num').value,producto:$('ord-prod').value,cliente:$('ord-cli').value,materiales:$('ord-mat').value,terminacion:$('ord-term').value,horasFab:+$('ord-horas').value||0,fechaInicio:$('ord-ini').value,fechaEntrega:$('ord-fin').value,estado:$('ord-est').value,observaciones:$('ord-obs').value};
+  id?updDoc('ordenes',id,d,()=>closeOv('ov-ord')):addDoc2('ordenes',d,()=>closeOv('ov-ord'));
+};
+
+// ── INVENTARIO ────────────────────────────────────────────────────────────
+function renderInventario(){
+  let el=$('page-inventario');if(!el)return;
+  el.innerHTML=`<div class="head"><h2>Inventario materiales</h2><button class="btn p sm" onclick="openMaterial()"><i class="ti ti-plus"></i>Material</button></div>
+  ${state.inventario.map(m=>`<div class="li">
+    <div class="info"><div class="name">${m.nombre}</div><div class="sub">${m.cantidad||0} ${m.unidad||''} · mínimo ${m.minimo||0}</div></div>
+    <span class="badge" style="${Number(m.cantidad)<=Number(m.minimo||0)?'background:#FCEBEB;color:#791F1F':'background:#EAF3DE;color:#27500A'}">${Number(m.cantidad)<=Number(m.minimo||0)?'⚠ Bajo':'✓ OK'}</span>
+    <button class="btn sm" onclick="openMaterial('${m.id}')">Editar</button>
+  </div>`).join('')||'<div class="card" style="color:var(--muted);text-align:center">Sin materiales</div>'}`;
+}
+window.openMaterial=id=>{
+  let m=state.inventario.find(x=>x.id===id)||{};
+  makeOverlay('ov-mat',id?'Editar material':'Nuevo material',`
+  <div class="frow"><label>Material *</label><input id="mat-nom" value="${esc(m.nombre||'')}"></div>
+  <div class="grid2">
+    <div class="frow"><label>Cantidad</label><input id="mat-cant" type="number" value="${m.cantidad||0}"></div>
+    <div class="frow"><label>Unidad</label><input id="mat-uni" value="${esc(m.unidad||'u')}" placeholder="u, m, kg, placa..."></div>
+  </div>
+  <div class="frow"><label>Stock mínimo</label><input id="mat-min" type="number" value="${m.minimo||0}"></div>
+  <div class="sactions"><button class="btn" onclick="closeOv('ov-mat')">Cancelar</button><button class="btn p" onclick="saveMaterial('${id||''}')">Guardar</button></div>`,null,false,true);
+};
+window.saveMaterial=id=>{
+  let d={nombre:$('mat-nom').value,cantidad:+$('mat-cant').value,unidad:$('mat-uni').value,minimo:+$('mat-min').value};
+  if(!d.nombre)return toast('Ingresá el nombre del material');
+  id?updDoc('inventario',id,d,()=>closeOv('ov-mat')):addDoc2('inventario',d,()=>closeOv('ov-mat'));
+};
+
+// ── CAJA ──────────────────────────────────────────────────────────────────
+function renderCaja(){
+  let el=$('page-caja');if(!el)return;
+  let saldo=state.caja.reduce((s,m)=>s+(m.tipo==='ingreso'?m.monto:-m.monto),0);
+  el.innerHTML=`
+  <div class="metrics">
+    <div class="metric"><small>Saldo</small><strong style="color:${saldo>=0?'var(--accent)':'var(--danger)'}">${fmt(saldo)}</strong></div>
+    <div class="metric"><small>Movimientos</small><strong>${state.caja.length}</strong></div>
+  </div>
+  <div class="head"><h2>Caja</h2><button class="btn p sm" onclick="openCaja()"><i class="ti ti-plus"></i>Nuevo</button></div>
+  ${[...state.caja].sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||'')).map(m=>`<div class="li">
+    <div class="info"><div class="name">${m.desc}</div><div class="sub">${m.fecha||''} ${m.cliente?'· '+m.cliente:''} ${m.medio?'· '+m.medio:''}</div></div>
+    <b style="color:${m.tipo==='ingreso'?'var(--accent)':'var(--danger)'};white-space:nowrap">${m.tipo==='ingreso'?'+':'-'}${fmt(m.monto)}</b>
+  </div>`).join('')||'<div class="card" style="color:var(--muted);text-align:center">Sin movimientos</div>'}`;
+}
+window.openCaja=()=>{
+  let cliOpts=state.clientes.map(c=>`<option value="${c.nombre}">${c.nombre}</option>`).join('');
+  makeOverlay('ov-caja','Movimiento de caja',`
+  <div class="grid2">
+    <div class="frow"><label>Tipo</label><select id="cj-tipo"><option value="ingreso">Ingreso</option><option value="egreso">Egreso</option></select></div>
+    <div class="frow"><label>Fecha</label><input id="cj-fecha" type="date" value="${today()}"></div>
+  </div>
+  <div class="frow"><label>Descripción</label><input id="cj-desc"></div>
+  <div class="frow"><label>Cliente asociado (opcional)</label><select id="cj-cliente"><option value="">Sin cliente</option>${cliOpts}</select></div>
+  <div class="frow"><label>Medio de pago</label><select id="cj-medio" onchange="onCajaMedio(this.value)">
+    ${MEDIOS.map(m=>`<option>${m}</option>`).join('')}
+  </select></div>
+  <div id="cj-extra"></div>
+  <div class="frow"><label>Monto</label>${moneyInput('cj-monto',0,'fmtMoneyInput')}</div>
+  <div class="frow"><label>Observaciones</label><textarea id="cj-obs" rows="2"></textarea></div>
+  <div class="sactions"><button class="btn" onclick="closeOv('ov-caja')">Cancelar</button><button class="btn p" onclick="saveCaja()">Guardar</button></div>`,null,false,true);
+};
+window.onCajaMedio=medio=>{
+  let ex=$('cj-extra');if(!ex)return;
+  if(medio==='Dólares'){ex.innerHTML=`<div class="grid2"><div class="frow"><label>Cantidad USD</label><input id="cj-usd" type="number" placeholder="0" oninput="calcCotiz()"></div><div class="frow"><label>Cotización</label><input id="cj-cotiz" type="number" value="1000" oninput="calcCotiz()"></div></div><div id="cj-equiv" style="font-size:12px;color:var(--muted);margin-bottom:8px"></div>`}
+  else if(medio==='Cheque'){ex.innerHTML=`<div class="grid2"><div class="frow"><label>Banco</label><input id="cj-banco"></div><div class="frow"><label>Nro cheque</label><input id="cj-nrocheque"></div></div><div class="frow"><label>Fecha cobro</label><input id="cj-fchq" type="date"></div>`}
+  else ex.innerHTML='';
+};
+window.calcCotiz=()=>{let usd=+($('cj-usd')||{}).value||0,cot=+($('cj-cotiz')||{}).value||1000;let eq=Math.round(usd*cot);if($('cj-equiv'))$('cj-equiv').textContent=`Equivalente: ${fmt(eq)}`;if($('cj-monto'))$('cj-monto').value=fmtInput(eq)};
+window.saveCaja=()=>{
+  let medio=$('cj-medio').value;
+  let d={tipo:$('cj-tipo').value,desc:$('cj-desc').value,cliente:$('cj-cliente').value,medio,monto:getM('cj-monto'),fecha:$('cj-fecha').value,obs:$('cj-obs').value};
+  if(medio==='Dólares'){d.usd=+($('cj-usd')||{}).value||0;d.cotizacion=+($('cj-cotiz')||{}).value||1000}
+  if(medio==='Cheque'){d.banco=($('cj-banco')||{}).value;d.nroCheque=($('cj-nrocheque')||{}).value;d.fechaCheque=($('cj-fchq')||{}).value}
+  if(!d.monto)return toast('Ingresá el monto');
+  addDoc2('caja',d,()=>closeOv('ov-caja'));
+};
+
+// ── GASTOS ────────────────────────────────────────────────────────────────
+function renderGastos(){
+  let el=$('page-gastos');if(!el)return;
+  el.innerHTML=`<div class="head"><h2>Gastos</h2><button class="btn p sm" onclick="openGasto()"><i class="ti ti-plus"></i>Nuevo</button></div>
+  ${[...state.gastos].sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||'')).map(g=>`<div class="li">
+    <div class="info"><div class="name">${g.desc}</div><div class="sub">${g.cat||''} · ${g.fecha||''}${g.presupuestoDesc?' · '+g.presupuestoDesc:''}</div></div>
+    <b style="color:var(--danger)">${fmt(g.monto)}</b>
+  </div>`).join('')||'<div class="card" style="color:var(--muted);text-align:center">Sin gastos</div>'}`;
+}
+window.openGasto=()=>{
+  let preOpts=state.presupuestos.map(p=>`<option value="${p.id}">${p.numero||''} · ${clienteName(p.clienteId)}</option>`).join('');
+  makeOverlay('ov-gasto','Nuevo gasto',`
+  <div class="frow"><label>Descripción *</label><input id="g-desc"></div>
+  <div class="grid2">
+    <div class="frow"><label>Monto</label>${moneyInput('g-monto',0,'fmtMoneyInput')}</div>
+    <div class="frow"><label>Fecha</label><input id="g-fecha" type="date" value="${today()}"></div>
+  </div>
+  <div class="frow"><label>Categoría</label><select id="g-cat">${CATS_GASTO.map(c=>`<option>${c}</option>`).join('')}</select></div>
+  <div class="frow"><label>Asociar a</label><select id="g-asoc" onchange="onGastoAsoc(this.value)"><option value="general">Gasto general</option><option value="presupuesto">Presupuesto</option></select></div>
+  <div id="g-pre-wrap" style="display:none" class="frow"><label>Presupuesto</label><select id="g-pre"><option value="">Seleccionar</option>${preOpts}</select></div>
+  <div class="sactions"><button class="btn" onclick="closeOv('ov-gasto')">Cancelar</button><button class="btn p" onclick="saveGasto()">Guardar</button></div>`,null,false,true);
+};
+window.onGastoAsoc=v=>{if($('g-pre-wrap'))$('g-pre-wrap').style.display=v==='presupuesto'?'block':'none'};
+window.saveGasto=()=>{
+  let preId=$('g-asoc').value==='presupuesto'?$('g-pre').value:'';
+  let preDesc=preId?presupDesc(preId):'';
+  let d={desc:$('g-desc').value,monto:getM('g-monto'),fecha:$('g-fecha').value,cat:$('g-cat').value,presupuestoId:preId,presupuestoDesc:preDesc};
+  if(!d.desc||!d.monto)return toast('Completá descripción y monto');
+  addDoc2('gastos',d,()=>closeOv('ov-gasto'));
+};
+
+// ── USUARIOS ──────────────────────────────────────────────────────────────
+function renderUsuarios(){
+  let el=$('page-usuarios');if(!el)return;
+  el.innerHTML=`<div class="head"><h2>Usuarios</h2><button class="btn p sm" onclick="openUsuario()"><i class="ti ti-plus"></i>Nuevo</button></div>
+  ${state.usuarios.map(u=>`<div class="li"><div class="info"><div class="name">${u.nombre||u.email}</div><div class="sub">${u.email} · ${u.rol}</div></div><button class="btn sm" onclick="openUsuario('${u.id}')">Editar</button></div>`).join('') }`;
+}
+window.openUsuario=id=>{
+  let u=state.usuarios.find(x=>x.id===id)||{};
+  makeOverlay('ov-user',id?'Editar usuario':'Nuevo usuario',`
+  <div class="frow"><label>Nombre</label><input id="u-nom" value="${esc(u.nombre||'')}"></div>
+  <div class="frow"><label>Email</label><input id="u-email" value="${esc(u.email||'')}"></div>
+  <div class="frow"><label>Rol</label><select id="u-rol"><option value="admin">Administrador</option><option value="produccion">Encargado producción</option></select></div>
+  <div class="card" style="margin-top:8px;font-size:12px;color:var(--muted)">El usuario inicia sesión con email/contraseña. Desde acá asignás el rol para limitar el acceso.</div>
+  <div class="sactions"><button class="btn" onclick="closeOv('ov-user')">Cancelar</button><button class="btn p" onclick="saveUsuario('${id||''}')">Guardar</button></div>`,null,false,true);
+  setTimeout(()=>{if($('u-rol'))$('u-rol').value=u.rol||'produccion'},50);
+};
+window.saveUsuario=id=>{
+  let rol=$('u-rol').value;
+  let d={nombre:$('u-nom').value,email:$('u-email').value,rol,permisos:roles[rol]};
+  id?updDoc('usuarios',id,d,()=>closeOv('ov-user')):addDoc2('usuarios',d,()=>closeOv('ov-user'));
+};
+
+// ── ACTIVIDAD ─────────────────────────────────────────────────────────────
+function renderActividad(){
+  let el=$('page-actividad');if(!el)return;
+  el.innerHTML=`<div class="head"><h2>Actividad</h2></div>
+  ${[...state.historial].sort((a,b)=>b.fecha-a.fecha).slice(0,60).map(h=>`<div class="li"><div class="info"><div class="name">${h.action}</div><div class="sub">${h.usuario||''} · ${new Date(h.fecha).toLocaleString('es-AR')}</div></div></div>`).join('')||'<div class="card" style="color:var(--muted);text-align:center">Sin actividad</div>'}`;
+}
+
+// ── CONFIG ────────────────────────────────────────────────────────────────
+function renderConfig(){
+  let el=$('page-config');if(!el)return;
+  el.innerHTML=`<div class="head"><h2>Configuración</h2></div><div class="card"><b>Datos empresa</b><p style="color:var(--muted);margin-top:8px;font-size:13px">Próximamente: logo, datos empresa, personalización PDF, pie de página.</p></div>`;
+}
+
+// ── PDF / SHARE ───────────────────────────────────────────────────────────
 window.closePdf=()=>$('pdf').classList.remove('open');
-window.shareDoc=()=>navigator.share?navigator.share({text:currentDocText}).catch(()=>{}):navigator.clipboard.writeText(currentDocText).then(()=>toast('Copiado al portapapeles'));
-window.printDoc=()=>{let w=window.open('','_blank');w.document.write('<html><head><style>body{font-family:Georgia,serif;padding:20px}table{width:100%;border-collapse:collapse}th{font-size:9px;text-transform:uppercase;color:#777;border-bottom:1px solid #ddd;padding-bottom:5px}td{font-size:13px;border-bottom:1px solid #eee;padding:8px 0}td:last-child{text-align:right;font-weight:700}</style></head><body>'+$('pdf-content').innerHTML+'<script>window.onload=function(){print()}<\/script></body></html>');w.document.close()};
+window.shareDoc=()=>{if(navigator.share)navigator.share({text:currentDocText}).catch(()=>{});else navigator.clipboard.writeText(currentDocText).then(()=>toast('Copiado al portapapeles'))};
+window.printDoc=()=>{let w=window.open('','_blank');w.document.write('<html><head><meta charset="UTF-8"><style>body{font-family:Georgia,serif;padding:20px;color:#111}table{width:100%;border-collapse:collapse}th{font-size:9px;text-transform:uppercase;color:#777;border-bottom:1px solid #ddd;padding-bottom:4px;text-align:left}td{font-size:13px;border-bottom:1px solid #eee;padding:7px 0;vertical-align:top}td:last-child{text-align:right;font-weight:700}</style></head><body>'+$('pdf-content').innerHTML+'<script>window.onload=function(){print()}<\/script></body></html>');w.document.close()};
 
-window.openOrden=id=>{let o=state.ordenes.find(x=>x.id===id)||{};makeOverlay('ov-ord',id?'Editar orden':'Orden producción',`<div class="frow"><label>Número</label><input id="ord-num" value="${o.numero||nextCode('OP',state.ordenes)}"></div><div class="frow"><label>Producto / trabajo</label><input id="ord-prod" value="${o.producto||o.descripcion||''}"></div><div class="frow"><label>Materiales</label><textarea id="ord-mat">${o.materiales||''}</textarea></div><div class="frow"><label>Terminación</label><input id="ord-term" value="${o.terminacion||''}"></div><div class="grid2"><div class="frow"><label>Inicio</label><input id="ord-ini" type="date" value="${o.fechaInicio||today()}"></div><div class="frow"><label>Entrega</label><input id="ord-fin" type="date" value="${o.fechaEntrega||today()}"></div></div><div class="frow"><label>Estado</label><select id="ord-est"><option value="pendiente">Pendiente</option><option value="proceso">En proceso</option><option value="pausado">Pausado</option><option value="finalizado">Finalizado</option></select></div><div class="frow"><label>Observaciones</label><textarea id="ord-obs">${o.observaciones||''}</textarea></div>`,`saveOrden('${id||''}')`);if($('ord-est'))$('ord-est').value=o.estado||'pendiente'};
-window.saveOrden=id=>{let d={numero:($('ord-num').value)||nextCode('OP',state.ordenes),producto:$('ord-prod').value,materiales:$('ord-mat').value,terminacion:$('ord-term').value,fechaInicio:$('ord-ini').value,fechaEntrega:$('ord-fin').value,estado:$('ord-est').value,observaciones:$('ord-obs').value};id?upd('ordenes',id,d,()=>closeOv('ov-ord')):add('ordenes',d,()=>closeOv('ov-ord'))};
+// ── OVERLAY HELPER ────────────────────────────────────────────────────────
+window.makeOverlay=function(id,title,html,_dep,noBtn,noAction){
+  let existing=$(id);if(existing)existing.remove();
+  let o=document.createElement('div');o.className='overlay open';o.id=id;
+  o.innerHTML=`<div class="sheet"><div class="sheet-title"><span>${title}</span><button class="close" onclick="closeOv('${id}')">×</button></div>${html}</div>`;
+  o.addEventListener('click',e=>{if(e.target===o)closeOv(id)});
+  $('overlays').appendChild(o);
+};
+window.closeOv=id=>$(id)&&$(id).remove();
+window.delDoc=delDoc;
 
-window.openMaterial=id=>{let m=state.inventario.find(x=>x.id===id)||{};makeOverlay('ov-mat',id?'Editar material':'Nuevo material',`<div class="frow"><label>Material *</label><input id="mat-nom" value="${m.nombre||''}"></div><div class="grid2"><div class="frow"><label>Cantidad</label><input id="mat-cant" type="number" value="${m.cantidad||0}"></div><div class="frow"><label>Unidad</label><input id="mat-uni" value="${m.unidad||'u'}" placeholder="u, m, kg, placa..."></div></div><div class="frow"><label>Stock mínimo</label><input id="mat-min" type="number" value="${m.minimo||0}"></div>`,`saveMaterial('${id||''}')`)};
-window.saveMaterial=id=>{let d={nombre:$('mat-nom').value,cantidad:+$('mat-cant').value,unidad:$('mat-uni').value,minimo:+$('mat-min').value};if(!d.nombre)return toast('Ingresá el material');id?upd('inventario',id,d,()=>closeOv('ov-mat')):add('inventario',d,()=>closeOv('ov-mat'))};
-
-window.openCaja=()=>makeOverlay('ov-caja','Movimiento de caja',`<div class="grid2"><div class="frow"><label>Tipo</label><select id="cj-tipo"><option value="ingreso">Ingreso</option><option value="egreso">Egreso</option></select></div><div class="frow"><label>Fecha</label><input id="cj-fecha" type="date" value="${today()}"></div></div><div class="frow"><label>Descripción</label><input id="cj-desc"></div><div class="frow"><label>Monto $</label><input id="cj-monto" type="number"></div>`,`saveCaja()`);
-window.saveCaja=()=>{let d={tipo:$('cj-tipo').value,desc:$('cj-desc').value,monto:+$('cj-monto').value,fecha:$('cj-fecha').value};if(!d.monto)return toast('Ingresá el monto');add('caja',d,()=>closeOv('ov-caja'))};
-
-window.openGasto=()=>makeOverlay('ov-gasto','Nuevo gasto',`<div class="frow"><label>Descripción</label><input id="g-desc"></div><div class="grid2"><div class="frow"><label>Monto $</label><input id="g-monto" type="number"></div><div class="frow"><label>Fecha</label><input id="g-fecha" type="date" value="${today()}"></div></div><div class="frow"><label>Categoría</label><input id="g-cat" placeholder="Ej: Materiales, herramientas"></div>`,`saveGasto()`);
-window.saveGasto=()=>{let d={desc:$('g-desc').value,monto:+$('g-monto').value,fecha:$('g-fecha').value,cat:$('g-cat').value};if(!d.monto||!d.desc)return toast('Completá descripción y monto');add('gastos',d,()=>closeOv('ov-gasto'))};
-
-window.openUsuario=id=>{let u=state.usuarios.find(x=>x.id===id)||{};makeOverlay('ov-user',id?'Editar usuario':'Nuevo usuario',`<div class="frow"><label>Nombre</label><input id="u-nom" value="${u.nombre||''}"></div><div class="frow"><label>Email</label><input id="u-email" value="${u.email||''}"></div><div class="frow"><label>Rol</label><select id="u-rol"><option value="admin">Administrador</option><option value="produccion">Encargado producción (Matías)</option></select></div><div class="card" style="margin-top:8px"><small style="color:var(--muted)">El usuario se registra con email y contraseña desde la pantalla de login. Desde acá asignás el rol para limitar el acceso a las secciones.</small></div>`,`saveUsuario('${id||''}')`);if($('u-rol'))$('u-rol').value=u.rol||'produccion'};
-window.saveUsuario=id=>{let rol=$('u-rol').value,d={nombre:$('u-nom').value,email:$('u-email').value,rol,permisos:roles[rol]};id?upd('usuarios',id,d,()=>closeOv('ov-user')):add('usuarios',d,()=>closeOv('ov-user'))};
-
+// ── Close dropdowns on outside click ─────────────────────────────────────
 document.addEventListener('click',e=>{if(!e.target.closest('.search'))document.querySelectorAll('.drop').forEach(d=>d.classList.remove('open'))});
-});
+
+}); // end load
 </script>
 </body>
 </html>
