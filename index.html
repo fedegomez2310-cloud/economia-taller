@@ -101,9 +101,52 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pago-strip .ps-item{display:flex;flex-direction:column;flex:1;min-width:80px;}
 .pago-strip .ps-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px;}
 .pago-strip .ps-val{font-size:13px;font-weight:600;color:var(--text1);}
-.saldo-chip{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;margin-top:6px;}
-.saldo-chip.positivo{background:#FAEEDA;color:#633806;}
-.saldo-chip.cero{background:#E1F5EE;color:#085041;}
+.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;}
+.check-item{display:flex;align-items:center;gap:8px;padding:9px 10px;border:0.5px solid var(--border);border-radius:8px;cursor:pointer;user-select:none;}
+.check-item input{width:18px;height:18px;cursor:pointer;accent-color:var(--accent);flex-shrink:0;}
+.check-item span{font-size:13px;color:var(--text1);}
+/* PRESUPUESTO PDF */
+.pdf-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:16px;}
+.pdf-overlay.open{display:flex;}
+.pdf-box{background:#fff;border-radius:12px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;padding:0;}
+.pdf-actions{display:flex;gap:8px;padding:12px 16px;border-top:1px solid #eee;background:#fff;border-radius:0 0 12px 12px;position:sticky;bottom:0;}
+/* Estilos del presupuesto imprimible */
+.presup{padding:28px 24px;background:#fff;color:#1a1a1a;font-family:Georgia,serif;}
+.presup-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #1a1a1a;}
+.presup-emisor{flex:1;}
+.presup-emisor .nombre{font-size:20px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.presup-emisor .tel{font-size:13px;color:#555;margin-top:4px;}
+.presup-num{text-align:right;}
+.presup-num .label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#888;}
+.presup-num .num{font-size:22px;font-weight:700;color:#1a1a1a;}
+.presup-num .fecha{font-size:12px;color:#555;margin-top:2px;}
+.presup-cliente{background:#f6f6f4;border-radius:8px;padding:12px 16px;margin-bottom:20px;}
+.presup-cliente .lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:4px;}
+.presup-cliente .nombre{font-size:16px;font-weight:700;}
+.presup-desc{margin-bottom:20px;}
+.presup-desc .lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:6px;}
+.presup-desc .texto{font-size:15px;line-height:1.5;}
+.presup-incluye{margin-bottom:20px;}
+.presup-incluye .lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:10px;}
+.presup-incluye-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.inc-item{display:flex;align-items:center;gap:7px;font-size:13px;}
+.inc-check{width:16px;height:16px;border:2px solid #1D9E75;border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.inc-check.on{background:#1D9E75;}
+.inc-check.on::after{content:'✓';color:#fff;font-size:10px;font-weight:700;}
+.presup-total{border-top:2px solid #1a1a1a;padding-top:16px;display:flex;justify-content:space-between;align-items:baseline;margin-bottom:20px;}
+.presup-total .lbl{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:#555;}
+.presup-total .monto{font-size:28px;font-weight:700;color:#1a1a1a;}
+.presup-entrega{display:flex;gap:20px;margin-bottom:20px;font-size:13px;}
+.presup-entrega div{flex:1;}
+.presup-entrega .lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:3px;}
+.presup-entrega .val{font-weight:600;}
+.presup-footer{border-top:1px solid #ddd;padding-top:12px;font-size:11px;color:#888;text-align:center;line-height:1.6;}
+/* emisor selector */
+.emisor-btns{display:flex;gap:8px;margin-bottom:16px;}
+.emisor-btn{flex:1;padding:14px;border:2px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer;text-align:center;}
+.emisor-btn.active{border-color:var(--accent);background:var(--accent-light,#E1F5EE);}
+.emisor-btn .en{font-size:14px;font-weight:700;color:var(--text1);}
+.emisor-btn .et{font-size:11px;color:var(--text2);margin-top:2px;}
 </style>
 </head>
 <body>
@@ -197,7 +240,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="frow"><label>Días de fabricación</label><input type="number" id="p-dias" placeholder="Ej: 15" min="1" inputmode="numeric"></div>
   </div>
 
-  <div class="section-label">Desglose</div>
+  <div class="section-label">Desglose interno</div>
   <div class="fgrid">
     <div class="frow"><label>Materia prima ($)</label><input type="number" id="p-mp" placeholder="0" min="0" inputmode="numeric" oninput="calcTotal()"></div>
     <div class="frow"><label>Mano de obra ($)</label><input type="number" id="p-mo" placeholder="0" min="0" inputmode="numeric" oninput="calcTotal()"></div>
@@ -205,6 +248,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="fgrid">
     <div class="frow"><label>Ganancia ($)</label><input type="number" id="p-gan" placeholder="0" min="0" inputmode="numeric" oninput="calcTotal()"></div>
     <div class="frow"><label>Total</label><input type="text" id="p-total-calc" readonly style="background:var(--bg2);font-weight:700;color:var(--accent);font-size:15px;"></div>
+  </div>
+
+  <div class="section-label">El presupuesto incluye</div>
+  <div class="check-grid">
+    <label class="check-item"><input type="checkbox" id="inc-mo"><span>Mano de obra</span></label>
+    <label class="check-item"><input type="checkbox" id="inc-mat"><span>Materiales</span></label>
+    <label class="check-item"><input type="checkbox" id="inc-dis"><span>Diseño</span></label>
+    <label class="check-item"><input type="checkbox" id="inc-flet"><span>Fletes</span></label>
+    <label class="check-item"><input type="checkbox" id="inc-inst"><span>Instalación</span></label>
+    <label class="check-item"><input type="checkbox" id="inc-tiempo"><span>Tiempo estimado</span></label>
+    <label class="check-item"><input type="checkbox" id="inc-phorno"><span>Pintura a horno</span></label>
+    <label class="check-item"><input type="checkbox" id="inc-psoplete"><span>Pintura a soplete</span></label>
   </div>
 
   <div class="section-label">Cobro</div>
@@ -295,6 +350,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 </div>
 
+<!-- OVERLAY PRESUPUESTO CLIENTE -->
+<div class="pdf-overlay" id="pdf-overlay">
+<div class="pdf-box">
+  <!-- Selector de emisor -->
+  <div id="pdf-emisor-select" style="padding:20px 20px 0;">
+    <div style="font-size:14px;font-weight:700;margin-bottom:12px;">¿Cómo emitir el presupuesto?</div>
+    <div class="emisor-btns">
+      <div class="emisor-btn active" id="ebtn-atelier" onclick="setEmisor('atelier')">
+        <div class="en">Atelier</div>
+        <div class="et">351 233-3230</div>
+      </div>
+      <div class="emisor-btn" id="ebtn-fede" onclick="setEmisor('fede')">
+        <div class="en">Fede Gomez Friera</div>
+        <div class="et">351 233-3230</div>
+      </div>
+    </div>
+  </div>
+  <!-- Presupuesto -->
+  <div id="pdf-content"></div>
+  <div class="pdf-actions">
+    <button class="btn full" onclick="closePdf()">Cerrar</button>
+    <button class="btn p full" onclick="compartirPdf()"><i class="ti ti-share"></i> Compartir</button>
+    <button class="btn full" onclick="imprimirPdf()"><i class="ti ti-printer"></i> Imprimir</button>
+  </div>
+</div>
+</div>
+
 <script>
 firebase.initializeApp({
   apiKey: "AIzaSyBl-3tb0qqJL7l-1TThOLljRhn9MsoOQQM",
@@ -311,11 +393,31 @@ const $ = id => document.getElementById(id);
 const fmt = n => '$' + Math.round(n).toLocaleString('es-AR');
 const today = () => new Date().toISOString().split('T')[0];
 const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const MESES_FULL = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const PAGO_LABEL = {efectivo:'Efectivo',cheque:'Cheque',mercadopago:'Mercado Pago',otros:'Otros'};
 const ESTADO_LABEL = {pendiente:'Pendiente',aprobado:'Confirmado',cobrado:'Cobrado'};
 
+const EMISORES = {
+  atelier: {nombre:'Atelier', tel:'351 233-3230'},
+  fede:    {nombre:'Fede Gomez Friera', tel:'351 233-3230'}
+};
+
+const INCLUDES = [
+  {id:'inc-mo',    label:'Mano de obra'},
+  {id:'inc-mat',   label:'Materiales'},
+  {id:'inc-dis',   label:'Diseño'},
+  {id:'inc-flet',  label:'Fletes'},
+  {id:'inc-inst',  label:'Instalación'},
+  {id:'inc-tiempo',label:'Tiempo estimado'},
+  {id:'inc-phorno',label:'Pintura a horno'},
+  {id:'inc-psoplete',label:'Pintura a soplete'},
+];
+
 let state = {clientes:[],presupuestos:[],gastos:[],caja:[]};
 let uid = null, authMode = 'login', unsubscribers = [];
+let currentEmisor = 'atelier';
+let currentPdfPresupuesto = null;
+let presupuestoCounter = 1;
 
 function showToast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
 function setSyncing(v){$('sync-dot').className='sync-dot'+(v?' loading':'');$('sync-txt').textContent=v?'Guardando...':'Sync ✓';}
@@ -352,7 +454,11 @@ auth.onAuthStateChanged(function(user){
 
 function initListeners(){
   ['clientes','presupuestos','gastos','caja'].forEach(col=>{
-    const unsub=db.collection('users').doc(uid).collection(col).onSnapshot(snap=>{state[col]=snap.docs.map(d=>({id:d.id,...d.data()}));render();});
+    const unsub=db.collection('users').doc(uid).collection(col).onSnapshot(snap=>{
+      state[col]=snap.docs.map(d=>({id:d.id,...d.data()}));
+      if(col==='presupuestos') presupuestoCounter=state.presupuestos.length+1;
+      render();
+    });
     unsubscribers.push(unsub);
   });
 }
@@ -381,7 +487,6 @@ function renderDashboard(){
   const porCobrar=confirmados-adelantos;
   const totalG=state.gastos.reduce((a,g)=>a+g.monto,0);
   const saldo=state.caja.reduce((a,m)=>a+(m.tipo==='ingreso'?m.monto:-m.monto),0);
-
   $('metrics-grid').innerHTML=
     '<div class="mc"><div class="lbl">Saldo en caja</div><div class="val '+(saldo>=0?'g':'r')+'">'+fmt(saldo)+'</div></div>'+
     '<div class="mc"><div class="lbl">Sin confirmar</div><div class="val a">'+fmt(sinConfirmar)+'</div></div>'+
@@ -399,15 +504,10 @@ function renderDashboard(){
     const saldoP=tot-(p.adelanto||0);
     return '<div class="fi-item">'+
       '<div class="fb"><div class="dia">'+d.getDate()+'</div><div class="mes">'+MESES[d.getMonth()]+'</div></div>'+
-      '<div style="flex:1;min-width:0">'+
-        '<div style="font-size:13px;font-weight:600">'+p.desc+'</div>'+
-        '<div style="font-size:11px;color:var(--text2)">'+(cl?cl.nombre:'Sin cliente')+(p.pago?' · '+(PAGO_LABEL[p.pago]||p.pago):'')+'</div>'+
-        (p.adelanto?'<div style="font-size:11px;color:var(--text2)">Adelanto: '+fmt(p.adelanto)+'</div>':'')+
-      '</div>'+
-      '<div style="text-align:right;flex-shrink:0">'+
-        '<div style="font-size:13px;font-weight:700;color:var(--info)">'+fmt(saldoP)+'</div>'+
-        '<div style="font-size:10px;color:var(--text2)">saldo</div>'+
-      '</div></div>';
+      '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600">'+p.desc+'</div>'+
+      '<div style="font-size:11px;color:var(--text2)">'+(cl?cl.nombre:'Sin cliente')+(p.pago?' · '+(PAGO_LABEL[p.pago]||p.pago):'')+'</div>'+
+      (p.adelanto?'<div style="font-size:11px;color:var(--text2)">Adelanto: '+fmt(p.adelanto)+'</div>':'')+
+      '</div><div style="text-align:right;flex-shrink:0"><div style="font-size:13px;font-weight:700;color:var(--info)">'+fmt(saldoP)+'</div><div style="font-size:10px;color:var(--text2)">saldo</div></div></div>';
   }).join(''):'<div class="empty"><i class="ti ti-calendar-off"></i>Sin cobros confirmados</div>';
 
   const activos=state.presupuestos.filter(p=>p.estado!=='cobrado');
@@ -439,9 +539,9 @@ function renderPresupuestos(f){
     const saldoP=tot-(p.adelanto||0);
     const pMP=tot?Math.round(p.mp/tot*100):33,pMO=tot?Math.round(p.mo/tot*100):33;
     const esConfirmado=p.estado==='aprobado';
-    return '<div class="card" style="cursor:pointer" onclick="editarPresupuesto(\''+p.id+'\')">'+
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">'+
-        '<div style="flex:1;min-width:0">'+
+    return '<div class="card">'+
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px" onclick="editarPresupuesto(\''+p.id+'\')" style="cursor:pointer">'+
+        '<div style="flex:1;min-width:0;cursor:pointer" onclick="editarPresupuesto(\''+p.id+'\')">'+
           '<div style="font-size:14px;font-weight:600;margin-bottom:3px">'+p.desc+'</div>'+
           '<div style="font-size:11px;color:var(--text2);display:flex;gap:6px;flex-wrap:wrap">'+
             (cl?'<span>👤 '+cl.nombre+'</span>':'')+
@@ -449,22 +549,25 @@ function renderPresupuestos(f){
             (p.dias?'<span>⏱ '+p.dias+'d</span>':'')+
           '</div>'+
         '</div>'+
-        '<div style="text-align:right;flex-shrink:0">'+
+        '<div style="text-align:right;flex-shrink:0;cursor:pointer" onclick="editarPresupuesto(\''+p.id+'\')">'+
           '<div style="font-size:15px;font-weight:700">'+fmt(tot)+'</div>'+
-          '<div style="display:flex;gap:4px;justify-content:flex-end;margin-top:3px">'+
-            '<span class="badge '+p.estado+'">'+(ESTADO_LABEL[p.estado]||p.estado)+'</span>'+
-          '</div>'+
+          '<span class="badge '+p.estado+'">'+(ESTADO_LABEL[p.estado]||p.estado)+'</span>'+
         '</div>'+
       '</div>'+
       (esConfirmado?
-        '<div class="pago-strip">'+
-          '<div class="ps-item"><div class="ps-lbl">Forma de pago</div><div class="ps-val">'+(PAGO_LABEL[p.pago]||'—')+'</div></div>'+
-          '<div class="ps-item"><div class="ps-lbl">Adelanto</div><div class="ps-val">'+(p.adelanto?fmt(p.adelanto):'—')+'</div></div>'+
-          '<div class="ps-item"><div class="ps-lbl">Prox. pago</div><div class="ps-val">'+(p.proxPago||'—')+'</div></div>'+
-          '<div class="ps-item"><div class="ps-lbl">Saldo</div><div class="ps-val" style="color:'+(saldoP>0?'var(--danger)':'var(--accent)')+'">'+fmt(saldoP)+'</div></div>'+
+        '<div style="background:var(--bg2);border-radius:8px;padding:10px 12px;margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">'+
+          '<div style="flex:1;min-width:70px"><div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px">Pago</div><div style="font-size:13px;font-weight:600">'+(PAGO_LABEL[p.pago]||'—')+'</div></div>'+
+          '<div style="flex:1;min-width:70px"><div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px">Adelanto</div><div style="font-size:13px;font-weight:600">'+(p.adelanto?fmt(p.adelanto):'—')+'</div></div>'+
+          '<div style="flex:1;min-width:70px"><div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px">Prox. pago</div><div style="font-size:13px;font-weight:600">'+(p.proxPago||'—')+'</div></div>'+
+          '<div style="flex:1;min-width:70px"><div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px">Saldo</div><div style="font-size:13px;font-weight:700;color:'+(saldoP>0?'var(--danger)':'var(--accent)')+'">'+fmt(saldoP)+'</div></div>'+
         '</div>'
       :'')+
       '<div class="bb" style="margin-top:8px"><div style="width:'+pMP+'%;background:#5DCAA5"></div><div style="width:'+pMO+'%;background:#378ADD"></div><div style="width:'+(100-pMP-pMO)+'%;background:#EF9F27"></div></div>'+
+      '<div style="display:flex;gap:8px;margin-top:10px;">'+
+        '<button class="btn sm full" style="flex:1" onclick="editarPresupuesto(\''+p.id+'\')"><i class="ti ti-edit"></i> Editar</button>'+
+        '<button class="btn sm p" style="flex:1" onclick="verPdfPresupuesto(\''+p.id+'\')"><i class="ti ti-file-text"></i> Ver presupuesto</button>'+
+        '<button class="btn sm d" onclick="delItem(\'presupuestos\',\''+p.id+'\')" aria-label="Eliminar"><i class="ti ti-trash"></i></button>'+
+      '</div>'+
     '</div>';
   }).join('');
 }
@@ -474,6 +577,7 @@ window.abrirNuevoPresupuesto=function(){
   ['p-desc','p-dias','p-mp','p-mo','p-gan','p-total-calc','p-adelanto'].forEach(id=>$(id).value='');
   $('p-cliente').value='';$('p-pago').value='efectivo';$('p-estado').value='pendiente';
   $('p-fecha-entrega').value=today();$('p-prox-pago').value=today();
+  INCLUDES.forEach(inc=>$(inc.id).checked=false);
   openSheet('sheet-presupuesto');
 };
 
@@ -489,12 +593,16 @@ window.editarPresupuesto=function(id){
   $('p-adelanto').value=p.adelanto||'';
   $('p-prox-pago').value=p.proxPago||today();
   $('p-estado').value=p.estado||'pendiente';
+  const inc=p.incluye||{};
+  INCLUDES.forEach(i=>$(i.id).checked=!!inc[i.id]);
   openSheet('sheet-presupuesto');
 };
 
 window.guardarPresupuesto=function(){
   const desc=$('p-desc').value.trim();
   if(!desc){showToast('Ingresá una descripción');return;}
+  const incluye={};
+  INCLUDES.forEach(i=>{incluye[i.id]=$(i.id).checked;});
   const data={
     clienteId:$('p-cliente').value||null,desc,
     fechaEntrega:$('p-fecha-entrega').value||null,
@@ -502,6 +610,7 @@ window.guardarPresupuesto=function(){
     mp:parseFloat($('p-mp').value)||0,
     mo:parseFloat($('p-mo').value)||0,
     gan:parseFloat($('p-gan').value)||0,
+    incluye,
     pago:$('p-pago').value,
     adelanto:parseFloat($('p-adelanto').value)||0,
     proxPago:$('p-prox-pago').value||null,
@@ -509,8 +618,153 @@ window.guardarPresupuesto=function(){
   };
   const editId=$('sp-id').value;
   if(editId){updItem('presupuestos',editId,data);}
-  else{data.createdAt=Date.now();addItem('presupuestos',data);}
+  else{data.createdAt=Date.now();data.numero=Date.now();addItem('presupuestos',data);}
   closeSheet('sheet-presupuesto');
+};
+
+// ---- PDF / PRESUPUESTO CLIENTE ----
+window.setEmisor=function(e){
+  currentEmisor=e;
+  $('ebtn-atelier').classList.toggle('active',e==='atelier');
+  $('ebtn-fede').classList.toggle('active',e==='fede');
+  if(currentPdfPresupuesto) renderPdf(currentPdfPresupuesto);
+};
+
+window.verPdfPresupuesto=function(id){
+  const p=state.presupuestos.find(x=>x.id===id);if(!p)return;
+  currentPdfPresupuesto=p;
+  currentEmisor='atelier';
+  $('ebtn-atelier').classList.add('active');
+  $('ebtn-fede').classList.remove('active');
+  renderPdf(p);
+  $('pdf-overlay').classList.add('open');
+};
+
+function renderPdf(p){
+  const emisor=EMISORES[currentEmisor];
+  const cl=state.clientes.find(c=>c.id===p.clienteId);
+  const tot=p.mp+p.mo+p.gan;
+  const inc=p.incluye||{};
+  const now=new Date();
+  const fechaHoy=now.getDate()+' de '+MESES_FULL[now.getMonth()]+' de '+now.getFullYear();
+  const num=String(p.numero||p.createdAt||Date.now()).slice(-5);
+
+  const incItems=INCLUDES.map(i=>{
+    const on=!!inc[i.id];
+    return '<div class="inc-item"><div class="inc-check '+(on?'on':'')+'"></div><span style="color:'+(on?'#1a1a1a':'#aaa')+';text-decoration:'+(on?'none':'none')+'">'+i.label+'</span></div>';
+  }).join('');
+
+  $('pdf-content').innerHTML=
+    '<div class="presup">'+
+      '<div class="presup-header">'+
+        '<div class="presup-emisor">'+
+          '<div class="nombre">'+emisor.nombre+'</div>'+
+          '<div class="tel">📞 '+emisor.tel+'</div>'+
+        '</div>'+
+        '<div class="presup-num">'+
+          '<div class="label">Presupuesto</div>'+
+          '<div class="num">#'+num+'</div>'+
+          '<div class="fecha">'+fechaHoy+'</div>'+
+        '</div>'+
+      '</div>'+
+      (cl?
+        '<div class="presup-cliente">'+
+          '<div class="lbl">Cliente</div>'+
+          '<div class="nombre">'+cl.nombre+'</div>'+
+          (cl.tel?'<div style="font-size:13px;color:#555;margin-top:2px;">'+cl.tel+'</div>':'')+
+        '</div>'
+      :'')+
+      '<div class="presup-desc">'+
+        '<div class="lbl">Descripción del trabajo</div>'+
+        '<div class="texto">'+p.desc+'</div>'+
+      '</div>'+
+      '<div class="presup-incluye">'+
+        '<div class="lbl">El presupuesto incluye</div>'+
+        '<div class="presup-incluye-grid">'+incItems+'</div>'+
+      '</div>'+
+      (p.dias||p.fechaEntrega?
+        '<div class="presup-entrega">'+
+          (p.dias?'<div><div class="lbl">Tiempo de fabricación</div><div class="val">'+p.dias+' días hábiles</div></div>':'')+
+          (p.fechaEntrega?'<div><div class="lbl">Fecha de entrega estimada</div><div class="val">'+p.fechaEntrega+'</div></div>':'')+
+        '</div>'
+      :'')+
+      '<div class="presup-total">'+
+        '<div class="lbl">Total</div>'+
+        '<div class="monto">'+fmt(tot)+'</div>'+
+      '</div>'+
+      (p.pago?
+        '<div style="font-size:13px;color:#555;margin-bottom:20px;">Forma de pago: <strong>'+(PAGO_LABEL[p.pago]||p.pago)+'</strong>'+(p.adelanto?' · Adelanto: <strong>'+fmt(p.adelanto)+'</strong>':'')+' · Saldo: <strong>'+fmt(tot-(p.adelanto||0))+'</strong></div>'
+      :'')+
+      '<div class="presup-footer">'+
+        'Este presupuesto tiene una validez de 15 días a partir de la fecha de emisión.<br>'+
+        'Ante cualquier consulta comuníquese al '+emisor.tel+
+      '</div>'+
+    '</div>';
+}
+
+window.closePdf=function(){$('pdf-overlay').classList.remove('open');currentPdfPresupuesto=null;};
+$('pdf-overlay').addEventListener('click',function(e){if(e.target===$('pdf-overlay'))closePdf();});
+
+window.imprimirPdf=function(){
+  const contenido=$('pdf-content').innerHTML;
+  const w=window.open('','_blank','width=600,height=800');
+  w.document.write('<html><head><meta charset="UTF-8"><style>'+
+    'body{font-family:Georgia,serif;margin:0;padding:0;color:#1a1a1a;}'+
+    '.presup{padding:32px 28px;}'+
+    '.presup-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #1a1a1a;}'+
+    '.presup-emisor .nombre{font-size:20px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}'+
+    '.presup-emisor .tel{font-size:13px;color:#555;margin-top:4px;}'+
+    '.presup-num{text-align:right;}.presup-num .label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#888;}'+
+    '.presup-num .num{font-size:22px;font-weight:700;}.presup-num .fecha{font-size:12px;color:#555;margin-top:2px;}'+
+    '.presup-cliente{background:#f6f6f4;border-radius:8px;padding:12px 16px;margin-bottom:20px;}'+
+    '.presup-cliente .lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:4px;}'+
+    '.presup-cliente .nombre{font-size:16px;font-weight:700;}'+
+    '.presup-desc{margin-bottom:20px;}.presup-desc .lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:6px;}'+
+    '.presup-desc .texto{font-size:15px;line-height:1.5;}'+
+    '.presup-incluye{margin-bottom:20px;}.presup-incluye .lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:10px;}'+
+    '.presup-incluye-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}'+
+    '.inc-item{display:flex;align-items:center;gap:7px;font-size:13px;}'+
+    '.inc-check{width:14px;height:14px;border:2px solid #1D9E75;border-radius:3px;display:inline-block;}'+
+    '.inc-check.on{background:#1D9E75;text-align:center;line-height:14px;color:#fff;font-size:10px;font-weight:700;}'+
+    '.inc-check.on::after{content:"✓";}'+
+    '.presup-total{border-top:2px solid #1a1a1a;padding-top:16px;display:flex;justify-content:space-between;align-items:baseline;margin-bottom:20px;}'+
+    '.presup-total .lbl{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:#555;}'+
+    '.presup-total .monto{font-size:28px;font-weight:700;}'+
+    '.presup-entrega{display:flex;gap:20px;margin-bottom:20px;font-size:13px;}'+
+    '.presup-entrega .lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:3px;}'+
+    '.presup-entrega .val{font-weight:600;}'+
+    '.presup-footer{border-top:1px solid #ddd;padding-top:12px;font-size:11px;color:#888;text-align:center;line-height:1.6;}'+
+  '</style></head><body>'+contenido+'</body></html>');
+  w.document.close();
+  setTimeout(()=>w.print(),500);
+};
+
+window.compartirPdf=function(){
+  if(!currentPdfPresupuesto)return;
+  const p=currentPdfPresupuesto;
+  const cl=state.clientes.find(c=>c.id===p.clienteId);
+  const tot=p.mp+p.mo+p.gan;
+  const emisor=EMISORES[currentEmisor];
+  const inc=p.incluye||{};
+  const items=INCLUDES.filter(i=>inc[i.id]).map(i=>i.label).join(', ');
+  const texto=
+    '*PRESUPUESTO - '+emisor.nombre.toUpperCase()+'*\n'+
+    '📞 '+emisor.tel+'\n\n'+
+    '*Cliente:* '+(cl?cl.nombre:'—')+'\n'+
+    '*Trabajo:* '+p.desc+'\n'+
+    (p.dias?'*Tiempo de fabricación:* '+p.dias+' días hábiles\n':'')+
+    (p.fechaEntrega?'*Fecha de entrega estimada:* '+p.fechaEntrega+'\n':'')+
+    (items?'\n*Incluye:* '+items+'\n':'')+
+    '\n*TOTAL: '+fmt(tot)+'*\n'+
+    (p.pago?'*Forma de pago:* '+(PAGO_LABEL[p.pago]||p.pago)+'\n':'')+
+    (p.adelanto?'*Adelanto:* '+fmt(p.adelanto)+' · *Saldo:* '+fmt(tot-(p.adelanto||0))+'\n':'')+
+    '\n_Presupuesto válido por 15 días._';
+
+  if(navigator.share){
+    navigator.share({title:'Presupuesto '+emisor.nombre,text:texto}).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(texto).then(()=>showToast('Copiado al portapapeles ✓')).catch(()=>showToast('Copiá el texto manualmente'));
+  }
 };
 
 function renderClientes(){
@@ -566,21 +820,18 @@ window.guardarCliente=function(){
   addItem('clientes',{nombre,tel:$('c-tel').value.trim(),email:$('c-email').value.trim(),notas:$('c-notas').value.trim(),createdAt:Date.now()});
   ['c-nombre','c-tel','c-email','c-notas'].forEach(id=>$(id).value='');closeSheet('sheet-cliente');
 };
-
 window.guardarGasto=function(){
   const desc=$('g-desc').value.trim(),monto=parseFloat($('g-monto').value)||0;
   if(!desc||!monto){showToast('Completá descripción y monto');return;}
   addItem('gastos',{desc,monto,fecha:$('g-fecha').value,cat:$('g-cat').value,createdAt:Date.now()});
   ['g-desc','g-monto'].forEach(id=>$(id).value='');closeSheet('sheet-gasto');
 };
-
 window.guardarCaja=function(){
   const desc=$('cj-desc').value.trim(),monto=parseFloat($('cj-monto').value)||0;
   if(!desc||!monto){showToast('Completá descripción y monto');return;}
   addItem('caja',{tipo:$('cj-tipo').value,desc,monto,fecha:$('cj-fecha').value,createdAt:Date.now()});
   ['cj-desc','cj-monto'].forEach(id=>$(id).value='');closeSheet('sheet-caja');
 };
-
 window.setCajaTipo=function(t){$('cj-tipo').value=t;$('cj-tipo-i').classList.toggle('active',t==='ingreso');$('cj-tipo-e').classList.toggle('active',t==='egreso');};
 window.delItem=delItem;
 ['p-fecha-entrega','p-prox-pago','g-fecha','cj-fecha'].forEach(id=>{const el=$(id);if(el)el.value=today();});
