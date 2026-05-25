@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Economía del Taller</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" type="text/javascript"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js" type="text/javascript"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js" type="text/javascript"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{--accent:#1D9E75;--accent-dark:#0F6E56;--danger:#E24B4A;--warning:#EF9F27;--info:#378ADD;--bg:#fff;--bg2:#f6f6f4;--border:rgba(0,0,0,.1);--text1:#1a1a1a;--text2:#666;}
@@ -392,6 +392,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 
 <script>
+window.addEventListener('load', function() {
 firebase.initializeApp({
   apiKey:"AIzaSyBl-3tb0qqJL7l-1TThOLljRhn9MsoOQQM",
   authDomain:"economia-del-taller.firebaseapp.com",
@@ -947,6 +948,7 @@ window.guardarCaja=function(){
 window.setCajaTipo=function(t){$('cj-tipo').value=t;$('cj-tipo-i').classList.toggle('active',t==='ingreso');$('cj-tipo-e').classList.toggle('active',t==='egreso');};
 window.delItem=delItem;
 ['p-fecha-entrega','p-prox-pago','g-fecha','cj-fecha'].forEach(function(id){var el=$(id);if(el)el.value=today();});
+}); // end window.load
 </script>
 </body>
 </html>
