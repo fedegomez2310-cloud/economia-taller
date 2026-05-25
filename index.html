@@ -101,6 +101,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pago-strip .ps-item{display:flex;flex-direction:column;flex:1;min-width:80px;}
 .pago-strip .ps-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px;}
 .pago-strip .ps-val{font-size:13px;font-weight:600;color:var(--text1);}
+.emisor-sel-btn{flex:1;padding:10px;border:2px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer;text-align:center;transition:border-color .15s;}
+.emisor-sel-btn.active{border-color:var(--accent);background:#E1F5EE;}
 .check-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;}
 .check-item{display:flex;align-items:center;gap:8px;padding:9px 10px;border:0.5px solid var(--border);border-radius:8px;cursor:pointer;user-select:none;}
 .check-item input{width:18px;height:18px;cursor:pointer;accent-color:var(--accent);flex-shrink:0;}
@@ -268,6 +270,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="frow"><label>Total</label><input type="text" id="p-total-calc" readonly style="background:var(--bg2);font-weight:700;color:var(--accent);font-size:15px;"></div>
   </div>
 
+  <div class="section-label">Emitir como</div>
+  <div class="fgrid" style="margin-bottom:4px;">
+    <button type="button" class="emisor-sel-btn active" id="esel-atelier" onclick="setEmisorForm('atelier')">
+      <div style="font-weight:700;font-size:13px;">Atelier</div>
+      <div style="font-size:11px;color:var(--text2)">351 233-3230</div>
+    </button>
+    <button type="button" class="emisor-sel-btn" id="esel-fede" onclick="setEmisorForm('fede')">
+      <div style="font-weight:700;font-size:13px;">Fede Gomez Friera</div>
+      <div style="font-size:11px;color:var(--text2)">351 233-3230</div>
+    </button>
+  </div>
   <div class="section-label">El presupuesto incluye</div>
   <div class="check-grid">
     <label class="check-item"><input type="checkbox" id="inc-mo"><span>Mano de obra</span></label>
@@ -275,8 +288,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <label class="check-item"><input type="checkbox" id="inc-dis"><span>Diseño</span></label>
     <label class="check-item"><input type="checkbox" id="inc-flet"><span>Fletes</span></label>
     <label class="check-item"><input type="checkbox" id="inc-inst"><span>Instalación</span></label>
-    <label class="check-item"><input type="checkbox" id="inc-tiempo"><span>Tiempo estimado</span></label>
-    <label class="check-item"><input type="checkbox" id="inc-phorno"><span>Pintura a horno</span></label>
+<label class="check-item"><input type="checkbox" id="inc-phorno"><span>Pintura a horno</span></label>
     <label class="check-item"><input type="checkbox" id="inc-psoplete"><span>Pintura a soplete</span></label>
   </div>
 
@@ -290,7 +302,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <option value="otros">Otros</option>
       </select>
     </div>
-    <div class="frow"><label>Adelanto ($)</label><input type="number" id="p-adelanto" placeholder="0" min="0" inputmode="numeric"></div>
+    <div class="frow"><label>Adelanto ($)</label><input type="number" id="p-adelanto" placeholder="0" min="0" inputmode="numeric" oninput="syncAdelanto('monto')"></div>
+    <div class="frow"><label>Adelanto (%)</label><input type="number" id="p-adelanto-pct" placeholder="0" min="0" max="100" inputmode="numeric" oninput="syncAdelanto('pct')"></div>
   </div>
   <div class="frow">
     <label>Condición de pago</label>
@@ -375,19 +388,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <!-- OVERLAY PRESUPUESTO CLIENTE -->
 <div class="pdf-overlay" id="pdf-overlay">
 <div class="pdf-box">
-  <!-- Selector de emisor -->
-  <div id="pdf-emisor-select" style="padding:20px 20px 0;">
-    <div style="font-size:14px;font-weight:700;margin-bottom:12px;">¿Cómo emitir el presupuesto?</div>
-    <div class="emisor-btns">
-      <div class="emisor-btn active" id="ebtn-atelier" onclick="setEmisor('atelier')">
-        <div class="en">Atelier</div>
-        <div class="et">351 233-3230</div>
-      </div>
-      <div class="emisor-btn" id="ebtn-fede" onclick="setEmisor('fede')">
-        <div class="en">Fede Gomez Friera</div>
-        <div class="et">351 233-3230</div>
-      </div>
-    </div>
+  <div style="padding:14px 16px 0;display:flex;justify-content:space-between;align-items:center;">
+    <div style="font-size:13px;font-weight:700;color:var(--text1)">Presupuesto para cliente</div>
+    <button onclick="closePdf()" style="background:none;border:none;cursor:pointer;color:var(--text2);font-size:22px;min-width:44px;">×</button>
   </div>
   <!-- Presupuesto -->
   <div id="pdf-content"></div>
@@ -430,7 +433,6 @@ const INCLUDES = [
   {id:'inc-dis',   label:'Diseño'},
   {id:'inc-flet',  label:'Fletes'},
   {id:'inc-inst',  label:'Instalación'},
-  {id:'inc-tiempo',label:'Tiempo estimado'},
   {id:'inc-phorno',label:'Pintura a horno'},
   {id:'inc-psoplete',label:'Pintura a soplete'},
 ];
@@ -594,6 +596,24 @@ function renderPresupuestos(f){
   }).join('');
 }
 
+window.syncAdelanto=function(origen){
+  const mp=parseFloat($('p-mp').value)||0,mo=parseFloat($('p-mo').value)||0,gan=parseFloat($('p-gan').value)||0;
+  const tot=mp+mo+gan;
+  if(origen==='monto'){
+    const monto=parseFloat($('p-adelanto').value)||0;
+    $('p-adelanto-pct').value=tot>0?Math.round(monto/tot*100):'';
+  } else {
+    const pct=parseFloat($('p-adelanto-pct').value)||0;
+    $('p-adelanto').value=tot>0?Math.round(tot*pct/100):'';
+  }
+};
+// Also sync when total changes
+var _origCalcTotal=window.calcTotal;
+window.calcTotal=function(){
+  _origCalcTotal();
+  const origen=$('p-adelanto').value?'monto':($('p-adelanto-pct').value?'pct':null);
+  if(origen)syncAdelanto(origen);
+};
 window.toggleFechaEntrega=function(){
   const t=$('p-fecha-tipo').value;
   $('p-fecha-entrega-wrap').style.display=t==='sinfecha'?'none':'block';
@@ -604,7 +624,8 @@ window.toggleDiasTipo=function(){
 };
 window.abrirNuevoPresupuesto=function(){
   $('sp-titulo').textContent='Nuevo presupuesto';$('sp-id').value='';
-  ['p-desc','p-dias','p-mp','p-mo','p-gan','p-total-calc','p-adelanto','p-condicion'].forEach(id=>$(id).value='');
+  ['p-desc','p-dias','p-mp','p-mo','p-gan','p-total-calc','p-adelanto','p-adelanto-pct','p-condicion'].forEach(id=>$(id).value='');
+  currentEmisor='atelier';$('esel-atelier').classList.add('active');$('esel-fede').classList.remove('active');
   $('p-cliente').value='';$('p-pago').value='efectivo';$('p-estado').value='pendiente';
   $('p-fecha-tipo').value='fecha';$('p-fecha-entrega-wrap').style.display='block';
   $('p-dias-tipo').value='libre';$('p-dias-label').textContent='Cantidad de días';
@@ -623,6 +644,8 @@ window.editarPresupuesto=function(id){
   calcTotal();
   $('p-pago').value=p.pago||'efectivo';
   $('p-adelanto').value=p.adelanto||'';
+  $('p-adelanto-pct').value=p.adelantoPct||'';
+  const em=p.emisor||'atelier';currentEmisor=em;$('esel-atelier').classList.toggle('active',em==='atelier');$('esel-fede').classList.toggle('active',em==='fede');
   $('p-condicion').value=p.condicion||'';
   $('p-prox-pago').value=p.proxPago||today();
   $('p-estado').value=p.estado||'pendiente';
@@ -655,20 +678,40 @@ window.guardarPresupuesto=function(){
     incluye,
     pago:$('p-pago').value,
     adelanto:parseFloat($('p-adelanto').value)||0,
+    adelantoPct:parseFloat($('p-adelanto-pct').value)||0,
+    emisor:currentEmisor,
     proxPago:$('p-prox-pago').value||null,
     estado:$('p-estado').value,
   };
   const editId=$('sp-id').value;
-  if(editId){updItem('presupuestos',editId,data);}
-  else{data.createdAt=Date.now();data.numero=Date.now();addItem('presupuestos',data);}
+  if(editId){
+    updItem('presupuestos',editId,data).then(()=>{
+      const p=state.presupuestos.find(x=>x.id===editId);
+      if(p){const merged=Object.assign({},p,data);currentPdfPresupuesto=merged;renderPdf(merged);$('pdf-overlay').classList.add('open');}
+    });
+  } else {
+    data.createdAt=Date.now();data.numero=Date.now();
+    db.collection('users').doc(uid).collection('presupuestos').add(data).then(doc=>{
+      setSyncing(false);showToast('Guardado ✓');
+      const merged=Object.assign({id:doc.id},data);
+      currentPdfPresupuesto=merged;
+      setEmisor(currentEmisor);
+      renderPdf(merged);
+      $('pdf-overlay').classList.add('open');
+    }).catch(e=>{setSyncing(false);showToast('Error: '+e.message);});
+    setSyncing(true);
+  }
   closeSheet('sheet-presupuesto');
 };
 
 // ---- PDF / PRESUPUESTO CLIENTE ----
+window.setEmisorForm=function(e){
+  currentEmisor=e;
+  $('esel-atelier').classList.toggle('active',e==='atelier');
+  $('esel-fede').classList.toggle('active',e==='fede');
+};
 window.setEmisor=function(e){
   currentEmisor=e;
-  $('ebtn-atelier').classList.toggle('active',e==='atelier');
-  $('ebtn-fede').classList.toggle('active',e==='fede');
   if(currentPdfPresupuesto) renderPdf(currentPdfPresupuesto);
 };
 
@@ -683,13 +726,13 @@ window.verPdfPresupuesto=function(id){
 };
 
 function renderPdf(p){
-  const emisor=EMISORES[currentEmisor];
+  const emisor=EMISORES[p.emisor||currentEmisor];
   const cl=state.clientes.find(c=>c.id===p.clienteId);
   const tot=p.mp+p.mo+p.gan;
   const inc=p.incluye||{};
   const now=new Date();
   const fechaHoy=now.getDate()+' de '+MESES_FULL[now.getMonth()]+' de '+now.getFullYear();
-  const num=String(p.numero||p.createdAt||Date.now()).slice(-5);
+  const rawNum=p.numero||p.createdAt||Date.now();const num='P-'+String(rawNum).slice(-5);
 
   const incItems=INCLUDES.map(i=>{
     const on=!!inc[i.id];
@@ -734,13 +777,12 @@ function renderPdf(p){
         '<div class="lbl">Total</div>'+
         '<div class="monto">'+fmt(tot)+'</div>'+
       '</div>'+
-      (p.condicion?
-        '<div style="background:#f6f6f4;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:13px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:4px;">Condición de pago</div>'+p.condicion+'</div>'
-      :
-        (p.pago?
-          '<div style="font-size:13px;color:#555;margin-bottom:20px;">Forma de pago: <strong>'+(PAGO_LABEL[p.pago]||p.pago)+'</strong>'+(p.adelanto?' · Adelanto: <strong>'+fmt(p.adelanto)+'</strong>':'')+' · Saldo: <strong>'+fmt(tot-(p.adelanto||0))+'</strong></div>'
-        :'')
-      )+
+      '<div style="background:#f6f6f4;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:13px;">'+
+        '<div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:6px;">Condición de pago</div>'+
+        (p.condicion?'<div style="margin-bottom:6px;">'+p.condicion+'</div>':'')+
+        (p.pago?'<div>Forma de pago: <strong>'+(PAGO_LABEL[p.pago]||p.pago)+'</strong></div>':'')+
+        (p.adelanto?'<div>Adelanto: <strong>'+fmt(p.adelanto)+(p.adelantoPct?' ('+p.adelantoPct+'%)'):'')+(p.adelanto?'</strong> &nbsp;·&nbsp; Saldo: <strong>'+fmt(tot-(p.adelanto||0))+'</strong></div>':'')+
+      '</div>'+
       '<div class="presup-footer">'+
         'Este presupuesto tiene una validez de 15 días a partir de la fecha de emisión.<br>'+
         'Ante cualquier consulta comuníquese al '+emisor.tel+
@@ -790,7 +832,7 @@ window.compartirPdf=function(){
   const p=currentPdfPresupuesto;
   const cl=state.clientes.find(c=>c.id===p.clienteId);
   const tot=p.mp+p.mo+p.gan;
-  const emisor=EMISORES[currentEmisor];
+  const emisor=EMISORES[p.emisor||currentEmisor];
   const inc=p.incluye||{};
   const items=INCLUDES.filter(i=>inc[i.id]).map(i=>i.label).join(', ');
   const texto=
