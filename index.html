@@ -1000,48 +1000,48 @@ function buildReporte(periodo){
     if(['confirmado','produccion','finalizado','entregado'].includes(p.estado)){byFecha[key].confirmados++;byFecha[key].montoConf+=(p.total||0);}
   });
 
-  el.innerHTML=\`
+  el.innerHTML=`
   <!-- KPIs principales -->
   <div class="metrics" style="grid-template-columns:1fr 1fr">
-    <div class="metric"><small>Presupuestos emitidos</small><strong>\${emitidos.length}</strong><div class="cnt">\${fmt(totalEmitido)}</div></div>
-    <div class="metric"><small>Confirmados</small><strong style="color:var(--accent)">\${confirmados.length}</strong><div class="cnt">\${fmt(totalConfirmado)}</div></div>
-    <div class="metric"><small>Pendientes</small><strong style="color:var(--warn)">\${pendientes.length}</strong></div>
-    <div class="metric"><small>Cancelados</small><strong style="color:var(--danger)">\${cancelados.length}</strong></div>
+    <div class="metric"><small>Presupuestos emitidos</small><strong>${emitidos.length}</strong><div class="cnt">${fmt(totalEmitido)}</div></div>
+    <div class="metric"><small>Confirmados</small><strong style="color:var(--accent)">${confirmados.length}</strong><div class="cnt">${fmt(totalConfirmado)}</div></div>
+    <div class="metric"><small>Pendientes</small><strong style="color:var(--warn)">${pendientes.length}</strong></div>
+    <div class="metric"><small>Cancelados</small><strong style="color:var(--danger)">${cancelados.length}</strong></div>
   </div>
 
   <!-- Flujo de dinero -->
   <div class="card">
     <b style="font-size:13px">Flujo de dinero</b>
     <div class="metrics" style="margin-top:10px;margin-bottom:0">
-      <div class="metric"><small>Ingresos caja</small><strong style="color:var(--accent)">\${fmt(totalIngresado)}</strong><div class="cnt">\${ingresos.length} mov.</div></div>
-      <div class="metric"><small>Egresos caja</small><strong style="color:var(--danger)">\${fmt(totalEgresado)}</strong><div class="cnt">\${egresos.length} mov.</div></div>
-      <div class="metric"><small>Flujo neto</small><strong style="color:\${flujo>=0?'var(--accent)':'var(--danger)'}">\${fmt(flujo)}</strong></div>
-      <div class="metric"><small>Gastos del período</small><strong style="color:var(--danger)">\${fmt(totalGastos)}</strong></div>
+      <div class="metric"><small>Ingresos caja</small><strong style="color:var(--accent)">${fmt(totalIngresado)}</strong><div class="cnt">${ingresos.length} mov.</div></div>
+      <div class="metric"><small>Egresos caja</small><strong style="color:var(--danger)">${fmt(totalEgresado)}</strong><div class="cnt">${egresos.length} mov.</div></div>
+      <div class="metric"><small>Flujo neto</small><strong style="color:${flujo>=0?'var(--accent)':'var(--danger)'}">${fmt(flujo)}</strong></div>
+      <div class="metric"><small>Gastos del período</small><strong style="color:var(--danger)">${fmt(totalGastos)}</strong></div>
     </div>
   </div>
 
   <!-- Ingresos por medio de pago -->
-  \${Object.keys(porMedio).length?\`<div class="card">
+  ${Object.keys(porMedio).length?`<div class="card">
     <b style="font-size:13px">Ingresos por medio de pago</b>
-    \${Object.entries(porMedio).sort((a,b)=>b[1]-a[1]).map(([k,v])=>\`
+    ${Object.entries(porMedio).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
     <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:.5px solid var(--border)">
-      <div style="font-size:13px">\${k}</div>
-      <b>\${fmt(v)}</b>
-    </div>\`).join('')}
-  </div>\`:''}
+      <div style="font-size:13px">${k}</div>
+      <b>${fmt(v)}</b>
+    </div>`).join('')}
+  </div>`:''}
 
   <!-- Gastos por categoría -->
-  \${Object.keys(porCat).length?\`<div class="card">
+  ${Object.keys(porCat).length?`<div class="card">
     <b style="font-size:13px">Gastos por categoría</b>
-    \${Object.entries(porCat).sort((a,b)=>b[1]-a[1]).map(([k,v])=>\`
+    ${Object.entries(porCat).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
     <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:.5px solid var(--border)">
-      <div style="font-size:13px">\${k}</div>
-      <b style="color:var(--danger)">\${fmt(v)}</b>
-    </div>\`).join('')}
-  </div>\`:''}
+      <div style="font-size:13px">${k}</div>
+      <b style="color:var(--danger)">${fmt(v)}</b>
+    </div>`).join('')}
+  </div>`:''}
 
   <!-- Presupuestos por estado -->
-  \${Object.keys(porEstado).length?\`<div class="card">
+  ${Object.keys(porEstado).length?`<div class="card">
     <b style="font-size:13px">Presupuestos por estado</b>
     <table style="width:100%;border-collapse:collapse;margin-top:10px">
       <thead><tr>
@@ -1050,31 +1050,31 @@ function buildReporte(periodo){
         <th style="text-align:right;font-size:10px;text-transform:uppercase;color:var(--muted);padding-bottom:6px;border-bottom:.5px solid var(--border)">Monto total</th>
       </tr></thead>
       <tbody>
-        \${Object.entries(porEstado).map(([e,v])=>\`<tr>
-          <td style="padding:8px 0;border-bottom:.5px solid var(--border)"><span class="badge b-\${e}">\${e}</span></td>
-          <td style="text-align:center;padding:8px 0;border-bottom:.5px solid var(--border)">\${v.cant}</td>
-          <td style="text-align:right;font-weight:700;padding:8px 0;border-bottom:.5px solid var(--border)">\${fmt(v.total)}</td>
-        </tr>\`).join('')}
+        ${Object.entries(porEstado).map(([e,v])=>`<tr>
+          <td style="padding:8px 0;border-bottom:.5px solid var(--border)"><span class="badge b-${e}">${e}</span></td>
+          <td style="text-align:center;padding:8px 0;border-bottom:.5px solid var(--border)">${v.cant}</td>
+          <td style="text-align:right;font-weight:700;padding:8px 0;border-bottom:.5px solid var(--border)">${fmt(v.total)}</td>
+        </tr>`).join('')}
       </tbody>
     </table>
-  </div>\`:''}
+  </div>`:''}
 
   <!-- Detalle presupuestos -->
-  \${emitidos.length?\`<div class="card">
+  ${emitidos.length?`<div class="card">
     <b style="font-size:13px">Detalle de presupuestos</b>
-    \${emitidos.sort((a,b)=>(b.fechaEntrega||'').localeCompare(a.fechaEntrega||'')).map(p=>\`
+    ${emitidos.sort((a,b)=>(b.fechaEntrega||'').localeCompare(a.fechaEntrega||'')).map(p=>`
     <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:.5px solid var(--border);gap:8px">
       <div style="flex:1;min-width:0">
-        <div style="font-weight:600;font-size:13px">\${p.numero||''} · \${p.descripcion||'Presupuesto'}</div>
-        <div style="font-size:11px;color:var(--muted)">\${clienteName(p.clienteId)}\${p.fechaEntrega?' · '+p.fechaEntrega:''}</div>
+        <div style="font-weight:600;font-size:13px">${p.numero||''} · ${p.descripcion||'Presupuesto'}</div>
+        <div style="font-size:11px;color:var(--muted)">${clienteName(p.clienteId)}${p.fechaEntrega?' · '+p.fechaEntrega:''}</div>
       </div>
       <div style="text-align:right;flex-shrink:0">
-        <div style="font-weight:700">\${fmt(p.total)}</div>
-        <span class="badge b-\${p.estado}">\${p.estado}</span>
+        <div style="font-weight:700">${fmt(p.total)}</div>
+        <span class="badge b-${p.estado}">${p.estado}</span>
       </div>
-    </div>\`).join('')}
-  </div>\`:'<div class="card" style="text-align:center;color:var(--muted)">Sin presupuestos en este período</div>'}
-  \`;
+    </div>`).join('')}
+  </div>`:'<div class="card" style="text-align:center;color:var(--muted)">Sin presupuestos en este período</div>'}
+  `;
 }
 
 // ── CONFIG ────────────────────────────────────────────────────────────────
