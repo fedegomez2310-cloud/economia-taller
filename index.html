@@ -528,7 +528,7 @@ window.saveProducto=id=>{
 function renderClientes(){
   let el=$('page-clientes');if(!el)return;
   el.innerHTML=`<div class="head"><h2>Clientes</h2><button class="btn p sm" onclick="openCliente()"><i class="ti ti-plus"></i>Nuevo</button></div>
-  ${state.clientes.map(c=>`<div class="li"><div class="info"><div class="name">${c.nombre}</div><div class="sub">${c.tel||''} ${c.email?'· '+c.email:''}</div></div><button class="btn sm" onclick="openCliente('${c.id}')">Editar</button></div>`).join('')||'<div class="card" style="color:var(--muted);text-align:center">Sin clientes</div>'}`;
+  ${state.clientes.map(c=>`<div class="li"><div class="info"><div class="name">${c.nombre}</div><div class="sub">${c.tel||''} ${c.email?'· '+c.email:''}</div></div><button class="btn sm" onclick="openCliente('${c.id}')">Editar</button><button class="btn sm d" onclick="if(confirm(\'¿Eliminar cliente?\'))delDoc(\'clientes\',\'${c.id}\')"><i class="ti ti-trash"></i></button></div></div>`).join('')||'<div class="card" style="color:var(--muted);text-align:center">Sin clientes</div>'}`;
 }
 window.openCliente=id=>{
   let c=state.clientes.find(x=>x.id===id)||{};
@@ -601,7 +601,7 @@ window.openPresupuesto=id=>{
   </div>
   <input type="hidden" id="pre-emisor" value="${p.emisor||'atelier'}">
   <div class="frow"><label>Cliente</label><select id="pre-cliente"><option value="">Seleccionar</option>${cliOpts}</select></div>
-  <div class="frow"><label>Descripción del trabajo</label><input id="pre-desc" value="${esc(p.descripcion||'')}"></div>
+  <div class="frow"><label>Descripción del trabajo</label><textarea id="pre-desc" rows="3" style="resize:vertical">${esc(p.descripcion||'')}</textarea></div>
   <div class="frow"><label>Fecha de entrega comprometida *</label><input id="pre-fecha-entrega" type="date" value="${p.fechaEntrega||today()}"></div>
   <div class="slabel">Productos del catálogo</div>
   <div class="search frow" style="position:relative">
